@@ -1,0 +1,954 @@
+<title>Zehntausend Netto</title>
+<style>
+  :root {
+    --paper:        #F6F7F4;
+    --surface:      #FFFFFF;
+    --surface-2:    #ECEFE9;
+    --ink:          #141A16;
+    --ink-2:        #3C463F;
+    --muted:        #6C776F;
+    --rule:         #D9DED6;
+    --rule-strong:  #B4BCB4;
+    --accent:       #1D6A48;
+    --accent-soft:  #E3EFE8;
+    --caution:      #8C4217;
+    --caution-soft: #F7E9DE;
+    --shadow:       0 1px 2px rgba(20,26,22,.05), 0 8px 24px -16px rgba(20,26,22,.18);
+
+    --serif: ui-serif, "Iowan Old Style", "Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:        #0E1210;
+      --surface:      #161B18;
+      --surface-2:    #1D2320;
+      --ink:          #E7ECE7;
+      --ink-2:        #BDC6BF;
+      --muted:        #8A958E;
+      --rule:         #2A312D;
+      --rule-strong:  #3D463F;
+      --accent:       #58B98A;
+      --accent-soft:  #16281F;
+      --caution:      #D28C59;
+      --caution-soft: #2C1F16;
+      --shadow:       0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:        #0E1210;
+    --surface:      #161B18;
+    --surface-2:    #1D2320;
+    --ink:          #E7ECE7;
+    --ink-2:        #BDC6BF;
+    --muted:        #8A958E;
+    --rule:         #2A312D;
+    --rule-strong:  #3D463F;
+    --accent:       #58B98A;
+    --accent-soft:  #16281F;
+    --caution:      #D28C59;
+    --caution-soft: #2C1F16;
+    --shadow:       0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 120px;
+  }
+
+  /* ---------- Kopf ---------- */
+
+  .masthead {
+    padding: 72px 0 40px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 22px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(38px, 6.2vw, 62px);
+    line-height: 1.04;
+    letter-spacing: -.02em;
+    text-wrap: balance;
+    margin: 0 0 20px;
+  }
+  .standfirst {
+    font-family: var(--serif);
+    font-size: clamp(18px, 2.3vw, 21px);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 62ch;
+    margin: 0;
+  }
+  .stamp {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin-top: 30px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: .05em;
+    color: var(--muted);
+  }
+
+  /* ---------- Abschnitte ---------- */
+
+  section { padding-top: 66px; }
+
+  .sec-head {
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    align-items: baseline;
+    gap: 0 12px;
+    border-bottom: 1px solid var(--rule-strong);
+    padding-bottom: 12px;
+    margin-bottom: 30px;
+  }
+  .sec-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .1em;
+    color: var(--accent);
+    padding-top: .35em;
+  }
+  .sec-head h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(25px, 3.4vw, 33px);
+    line-height: 1.15;
+    letter-spacing: -.015em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .body { max-width: 68ch; }
+  .body p { margin: 0 0 18px; }
+  .body > :last-child { margin-bottom: 0; }
+
+  h3 {
+    font-family: var(--sans);
+    font-weight: 650;
+    font-size: 16px;
+    letter-spacing: .005em;
+    margin: 36px 0 12px;
+  }
+  h4 {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 11.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 30px 0 10px;
+  }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  strong { font-weight: 650; }
+  em { font-style: italic; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: .94em; }
+
+  ul, ol { margin: 0 0 18px; padding-left: 1.15em; }
+  li { margin-bottom: 7px; }
+  li::marker { color: var(--muted); }
+
+  /* ---------- Tabellen ---------- */
+
+  .scroller {
+    overflow-x: auto;
+    margin: 26px 0 30px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+  table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+    font-size: 14.5px;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 10.5px;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 11px 14px 11px 0;
+    border-bottom: 1px solid var(--rule-strong);
+    vertical-align: bottom;
+  }
+  tbody td, tbody th {
+    padding: 11px 14px 11px 0;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    font-weight: 400;
+    vertical-align: top;
+  }
+  tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
+  td:last-child, th:last-child { padding-right: 0; }
+  .r { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  thead th.r { text-align: right; }
+  tr.total td, tr.total th {
+    border-top: 1px solid var(--ink);
+    border-bottom: 0;
+    font-weight: 650;
+    padding-top: 12px;
+  }
+  tr.total .r { color: var(--accent); }
+  td .sub { display: block; font-size: 12.5px; color: var(--muted); line-height: 1.45; margin-top: 2px; }
+
+  /* ---------- Kästen ---------- */
+
+  .box {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 22px 24px;
+    margin: 28px 0;
+    box-shadow: var(--shadow);
+  }
+  .box > :first-child { margin-top: 0; }
+  .box > :last-child { margin-bottom: 0; }
+  .box p { margin: 0 0 14px; font-size: 15.5px; }
+
+  .box.flag { background: var(--caution-soft); border-color: color-mix(in srgb, var(--caution) 30%, transparent); }
+  .box.flag .box-label { color: var(--caution); }
+  .box.key { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+  .box.key .box-label { color: var(--accent); }
+
+  .box-label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .lede {
+    font-family: var(--serif);
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink);
+    border-left: 3px solid var(--accent);
+    padding-left: 22px;
+    margin: 30px 0;
+    max-width: 58ch;
+  }
+
+  /* ---------- Kennzahlen ---------- */
+
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 30px 0;
+  }
+  .fig { background: var(--paper); padding: 18px 20px; }
+  .fig dt {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .fig dd {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 25px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .fig .cap { display: block; font-family: var(--sans); font-size: 12.5px; letter-spacing: 0; color: var(--muted); margin-top: 7px; line-height: 1.45; }
+
+  /* ---------- Zeitschiene ---------- */
+
+  .phases { list-style: none; margin: 30px 0; padding: 0; }
+  .phase {
+    display: grid;
+    grid-template-columns: 116px 1fr;
+    gap: 4px 22px;
+    padding: 20px 0;
+    border-top: 1px solid var(--rule);
+    margin: 0;
+  }
+  .phase:last-child { border-bottom: 1px solid var(--rule); }
+  .phase-when {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding-top: .3em;
+  }
+  .phase h3 { margin: 0 0 6px; font-size: 17px; }
+  .phase-body { font-size: 15.5px; }
+  .phase-body p { margin: 0 0 10px; }
+  .phase-body ul { margin: 0; font-size: 15px; }
+  .phase-body > :last-child { margin-bottom: 0; }
+
+  /* ---------- Fußnoten / Quellen ---------- */
+
+  .sources { margin-top: 76px; padding-top: 26px; border-top: 2px solid var(--ink); }
+  .sources h2 {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 16px;
+    font-weight: 600;
+  }
+  .sources ol { font-size: 13.5px; color: var(--ink-2); columns: 2; column-gap: 40px; padding-left: 1.2em; }
+  .sources li { margin-bottom: 9px; break-inside: avoid; }
+  @media (max-width: 640px) { .sources ol { columns: 1; } }
+
+  .disclaimer {
+    margin-top: 34px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 72ch;
+  }
+
+  @media (max-width: 620px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 18px 80px; }
+    .sec-head { grid-template-columns: 1fr; gap: 6px; }
+    .sec-num { padding-top: 0; }
+    .phase { grid-template-columns: 1fr; gap: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="kicker">Erwerbskonzept · Österreich &amp; EU · Stand 2026</p>
+    <h1>Zehntausend Netto</h1>
+    <p class="standfirst">Was 10.000 € netto im Monat in Österreich tatsächlich kostet, welche vier Wege ohne Studium dorthin führen, und was „minimaler Aufwand“ dabei realistisch bedeuten kann.</p>
+    <div class="stamp">
+      <span>Voraussetzung: Matura</span>
+      <span>Kein Studienabschluss nötig</span>
+      <span>Alle Zahlen: Rechtslage 2026</span>
+    </div>
+  </header>
+
+  <!-- ================= § 1 ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">§ 1</span>
+      <h2>Die Zielzahl, ehrlich gerechnet</h2>
+    </div>
+
+    <div class="body">
+      <p>Bevor irgendein Konzept Sinn ergibt, muss klar sein, gegen welche Zahl es antritt. „10.000 € netto“ ist nicht 10.000 € Umsatz und auch nicht 10.000 € Gewinn. Es ist der Betrag, der nach Sozialversicherung und Einkommensteuer übrig bleibt — also 120.000 € im Jahr.</p>
+      <p>Gerechnet als Einzelunternehmer mit Gewerbeberechtigung, GSVG-pflichtversichert, mit dem Tarif 2026:</p>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <caption class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Rückrechnung vom Nettoziel auf den nötigen Jahresgewinn</caption>
+        <thead>
+          <tr>
+            <th scope="col">Position</th>
+            <th scope="col">Grundlage</th>
+            <th scope="col" class="r">Jahr</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Gewinn vor Abgaben</th>
+            <td>nach allen Betriebsausgaben<span class="sub">= 19.058 € pro Monat</span></td>
+            <td class="r">228.700 €</td>
+          </tr>
+          <tr>
+            <th scope="row">− SVS-Beiträge</th>
+            <td>26,83 % (PV 18,5 + KV 6,8 + SV-Vorsorge 1,53), gedeckelt bei 97.020 €, plus UV 155,40 €<span class="sub">Die Höchstbeitragsgrundlage 2026 liegt bei 8.085 € im Monat — darüber steigen die Beiträge nicht mehr.</span></td>
+            <td class="r">−26.186 €</td>
+          </tr>
+          <tr>
+            <th scope="row">− Gewinnfreibetrag</th>
+            <td>Grundfreibetrag, 15 % der ersten 33.000 €, ohne Investitionserfordernis</td>
+            <td class="r">−4.950 €</td>
+          </tr>
+          <tr>
+            <th scope="row">= Steuerbemessungsgrundlage</th>
+            <td></td>
+            <td class="r">197.564 €</td>
+          </tr>
+          <tr>
+            <th scope="row">− Einkommensteuer</th>
+            <td>Tarif 2026, Spitzensatz 50 % ab 104.859 €<span class="sub">36.150 € bis zur Grenze, darüber 50 % auf 92.705 €</span></td>
+            <td class="r">−82.503 €</td>
+          </tr>
+          <tr class="total">
+            <th scope="row">= Netto verfügbar</th>
+            <td>entspricht 10.001 € im Monat</td>
+            <td class="r">120.011 €</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <dl class="figures">
+      <div class="fig">
+        <dt>Nötiger Jahresgewinn</dt>
+        <dd>228.700 €</dd>
+        <span class="cap">nach Betriebsausgaben, vor SV und Steuer</span>
+      </div>
+      <div class="fig">
+        <dt>Pro Monat</dt>
+        <dd>19.058 €</dd>
+        <span class="cap">jeden Monat, zwölf Monate lang</span>
+      </div>
+      <div class="fig">
+        <dt>Effektive Abgabenquote</dt>
+        <dd>47,5 %</dd>
+        <span class="cap">SVS und ESt zusammen</span>
+      </div>
+      <div class="fig">
+        <dt>Nötiger Jahresumsatz</dt>
+        <dd>ca. 269.000 €</dd>
+        <span class="cap">bei 15 % Kostenquote einer Dienstleistung</span>
+      </div>
+    </dl>
+
+    <div class="body">
+      <h3>Die GmbH bringt weniger, als meist behauptet wird</h3>
+      <p>Die Standardempfehlung lautet: ab einer gewissen Größe GmbH. Das stimmt — aber der Effekt ist kleiner, als die Rechnung auf den ersten Blick nahelegt. Körperschaftsteuer und Kapitalertragsteuer ergeben zusammen <strong>44,175 %</strong> (23 % KöSt, danach 27,5 % KESt auf die verbleibenden 77 %). Häufig kursiert noch der Wert 45,625 % — der stammt aus der Zeit der 25-prozentigen KöSt und ist überholt.</p>
+      <p>Die sinnvolle Struktur ist ein Geschäftsführerbezug bis zur SV-Höchstbeitragsgrundlage plus Ausschüttung des Rests. Damit sinkt der nötige Rohertrag auf grob <span class="num">219.500 €</span> — rund 9.200 € weniger als beim Einzelunternehmen. Davon gehen 2.000 bis 5.000 € jährliche Mehrkosten für Bilanzierung, Firmenbuch und Beratung ab.</p>
+
+      <div class="box flag">
+        <span class="box-label">Häufiger Denkfehler</span>
+        <p>Ein <strong>reines Dividendenmodell ohne Geschäftsführerbezug ist deutlich schlechter</strong>, nicht besser. Ausschüttungen an wesentlich beteiligte Gesellschafter-Geschäftsführer sind seit 2016 über die KESt-Anmeldung an die SVS zu melden und GSVG-beitragspflichtig — die Beiträge fallen also trotzdem an, während die Abzugsmöglichkeit gegen die endbesteuerte Ausschüttung eingeschränkt ist. Wer das ignoriert, rechnet sich die GmbH um mehrere zehntausend Euro schön.</p>
+        <p style="margin-bottom:0">Der echte GmbH-Vorteil liegt woanders: Wer Gewinne <em>im</em> Unternehmen lässt, zahlt nur 23 %. Das ist ein starkes Instrument für Vermögensaufbau — aber nutzlos, wenn das Geld für den Lebensunterhalt herausmuss.</p>
+      </div>
+
+      <h3>Der investitionsbedingte Gewinnfreibetrag erhöht dein Netto nicht</h3>
+      <p>Über den Grundfreibetrag hinaus lassen sich bis zu 46.400 € Gewinnfreibetrag geltend machen — gestaffelt mit 13 %, 7 % und 4,5 %. Der Haken: Dieser Teil verlangt tatsächliche Investitionen in Anlagegüter oder begünstigte Wertpapiere, die vier Jahre gebunden bleiben.</p>
+      <p>Bei 228.700 € Gewinn wären rund 20.600 € investitionsbedingter Freibetrag möglich. Das spart etwa 10.300 € Steuer — bindet aber 20.600 € in Wertpapieren. Unter dem Strich: <strong>rund 10.300 € weniger frei verfügbares Geld, dafür 20.600 € mehr Depot.</strong> Ein exzellenter Deal für Vermögensaufbau, effektiv 50 % Rabatt. Aber er senkt die Zielzahl für <em>ausgabefähiges</em> Netto nicht — er erhöht sie.</p>
+
+      <div class="box">
+        <span class="box-label">Zum Vergleich: der Angestelltenweg</span>
+        <p style="margin-bottom:0">Als Dienstnehmer läge der nötige Bruttobezug bei grob 17.000 bis 19.000 € monatlich auf 14 Gehälter — die begünstigte Besteuerung der Sonderzahlungen wirkt hier etwas entlastend. Solche Positionen existieren in Österreich fast ausschließlich im Vorstands- und C-Level-Bereich sowie in der Spitze des Software-Vertriebs, praktisch immer mit Studium oder fünfzehn Jahren belegbarem Track Record. Der Weg ist real, aber er ist kein Konzept, das man planen kann. Alles Folgende geht deshalb von Selbständigkeit aus.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= § 2 ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">§ 2</span>
+      <h2>Was „minimalster Aufwand“ bedeuten kann — und was nicht</h2>
+    </div>
+
+    <div class="body">
+      <p>Du hast ausdrücklich um eine Antwort ohne Übertreibung gebeten. Also die unbequeme Stelle zuerst, in zwei Sätzen, dann geht es weiter mit dem Plan.</p>
+
+      <p class="lede">Es gibt keinen legalen Weg, der ab Tag eins mit wenig Aufwand 19.000 € Monatsgewinn erzeugt. Entweder ist das Kapital schon da, oder die Arbeit liegt am Anfang — und die Frage ist nur, wie kurz die Aufbauphase ausfällt und wie wenig Aufwand danach übrig bleibt.</p>
+
+      <p>Das ist keine Absage, sondern eine Präzisierung. „Minimaler Aufwand“ lässt sich nämlich auf vier verschiedene Arten meinen, und drei davon sind erreichbar:</p>
+
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Lesart</th>
+              <th scope="col">Realistisch?</th>
+              <th scope="col">Preis</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">A — Wenig Aufwand ab sofort</th>
+              <td>Nein</td>
+              <td>Existiert nicht ohne vorhandenes Vermögen. Jedes Angebot, das dies verspricht, verkauft dir das Versprechen, nicht das Ergebnis.</td>
+            </tr>
+            <tr>
+              <th scope="row">B — Wenig Aufwand pro verdientem Euro</th>
+              <td>Ja</td>
+              <td>Erfordert einen Stundensatz ab 250 €. Zielzustand: 25 bis 30 Wochenstunden. Aufbau 24 bis 48 Monate.</td>
+            </tr>
+            <tr>
+              <th scope="row">C — Wenig Aufwand nach der Aufbauphase</th>
+              <td>Ja</td>
+              <td>Du besitzt, statt zu liefern. Zielzustand: 15 bis 25 Wochenstunden. Aufbau 3 bis 6 Jahre, oder Zukauf mit Kapital.</td>
+            </tr>
+            <tr>
+              <th scope="row">D — Kein Aufwand, das Kapital arbeitet</th>
+              <td>Ja</td>
+              <td>Braucht 3,5 bis 5 Mio. € Finanzvermögen. Kein Erwerbskonzept, sondern ein Zustand.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Zur Vollständigkeit: die Kapitalvariante</h4>
+      <p>Damit du die Größenordnung kennst, gegen die alles andere antritt. Um 120.000 € netto pro Jahr rein aus Kapital zu ziehen, brauchst du je nach Strategie:</p>
+      <ul>
+        <li><strong>Breit gestreutes Aktiendepot, 4 % Entnahme:</strong> rund <span class="num">3,5 Mio. €</span>. Angenommen ist ein Gewinnanteil von etwa 55 % in den entnommenen Anteilen nach längerer Haltedauer, damit eine effektive Belastung von grob 15 % statt der vollen 27,5 % KESt.</li>
+        <li><strong>Ausschüttende Dividendenstrategie, 3,5 % brutto:</strong> rund <span class="num">4,7 Mio. €</span>, weil die KESt hier auf den vollen Ertrag greift.</li>
+        <li><strong>Vermietung:</strong> die schlechteste Variante. Mieteinkünfte unterliegen dem progressiven Tarif bis 50 %, nicht der KESt. Bei 2,5 bis 3,5 % Nettorendite nach Bewirtschaftung landest du bei 5 bis 7 Mio. € Objektwert.</li>
+      </ul>
+      <p>Wenn dieses Vermögen vorhanden ist, ist deine Frage bereits beantwortet und alles Weitere überflüssig. Wenn nicht, ist Kapitalaufbau das <em>Ergebnis</em> der folgenden Routen, nicht ihre Voraussetzung.</p>
+    </div>
+  </section>
+
+  <!-- ================= § 3 ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">§ 3</span>
+      <h2>Vier Routen, die ohne Studium tragen</h2>
+    </div>
+
+    <div class="body">
+      <p>Alle vier sind in Österreich legal, ohne akademischen Abschluss zugänglich und führen rechnerisch auf 19.000 € Monatsgewinn. Sie unterscheiden sich in Kapitalbedarf, Dauer und darin, wie viel Aufwand am Ziel übrig bleibt.</p>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Route</th>
+            <th scope="col" class="r">Kapital</th>
+            <th scope="col" class="r">Dauer</th>
+            <th scope="col" class="r">Std./Woche am Ziel</th>
+            <th scope="col">Ausfallrisiko</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1 · Spezialist mit hohem Satz</th>
+            <td class="r">~5.000 €</td>
+            <td class="r">24–48 Mon.</td>
+            <td class="r">25–30</td>
+            <td>Mittel — Krankheit und Kundenverlust schlagen sofort durch</td>
+          </tr>
+          <tr>
+            <th scope="row">2 · Produktisiertes Geschäft</th>
+            <td class="r">aus Route 1</td>
+            <td class="r">36–60 Mon.</td>
+            <td class="r">15–25</td>
+            <td>Hoch — Personal, Cashflow, Haftung</td>
+          </tr>
+          <tr>
+            <th scope="row">3 · Provisionsvertrieb</th>
+            <td class="r">10–30.000 €</td>
+            <td class="r">36–60 Mon.</td>
+            <td class="r">40+</td>
+            <td>Sehr hoch — hohe Abbruchquote, Akquise bleibt der Job</td>
+          </tr>
+          <tr>
+            <th scope="row">4 · Betrieb kaufen</th>
+            <td class="r">200.000 €+</td>
+            <td class="r">12–24 Mon.</td>
+            <td class="r">15–25</td>
+            <td>Hoch — aber gegen bestehende Zahlen prüfbar</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="body">
+      <h3>Route 1 — Spezialist mit hohem Stundensatz</h3>
+      <p>Der einzige Weg ohne Kapital, der zuverlässig funktioniert. Der entscheidende Punkt ist nicht, mehr zu arbeiten, sondern über einer bestimmten Preisschwelle zu liegen. Diese Schwelle lässt sich exakt beziffern.</p>
+      <p>Bei 15 % Kostenquote brauchst du <span class="num">22.400 €</span> Monatsumsatz. Daraus folgt:</p>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col" class="r">Stundensatz</th>
+            <th scope="col" class="r">Verrechenbare Std./Monat</th>
+            <th scope="col" class="r">Gesamtarbeitszeit *</th>
+            <th scope="col">Bewertung</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="r">100 €</td>
+            <td class="r">224</td>
+            <td class="r">~72 Std./Woche</td>
+            <td>Unmöglich</td>
+          </tr>
+          <tr>
+            <td class="r">150 €</td>
+            <td class="r">149</td>
+            <td class="r">~48 Std./Woche</td>
+            <td>Machbar, aber Vollzeit plus</td>
+          </tr>
+          <tr>
+            <td class="r">200 €</td>
+            <td class="r">112</td>
+            <td class="r">~36 Std./Woche</td>
+            <td>Normale Vollzeit</td>
+          </tr>
+          <tr class="total">
+            <td class="r">250 €</td>
+            <td class="r">90</td>
+            <td class="r">~29 Std./Woche</td>
+            <td>Erst hier beginnt „wenig Aufwand“</td>
+          </tr>
+          <tr>
+            <td class="r">300 €</td>
+            <td class="r">75</td>
+            <td class="r">~24 Std./Woche</td>
+            <td>Vier Tage, deutlich unter Vollzeit</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="body">
+      <p style="font-size:14px;color:var(--muted);margin-top:-12px">* Verrechenbare Stunden mal Faktor 1,4 für Akquise, Angebote, Buchhaltung und Weiterbildung. Wer diesen Faktor weglässt, verrechnet sich systematisch um ein Drittel.</p>
+
+      <div class="box key">
+        <span class="box-label">Die operative Zielgröße</span>
+        <p style="margin-bottom:0"><strong>250 € pro Stunde, beziehungsweise 2.000 € Tagsatz.</strong> Das ist die Schwelle, ab der dein Ziel und deine Aufwandsvorgabe gleichzeitig erfüllbar sind. Unterhalb davon ist die Aufgabe nicht „schwer“, sondern arithmetisch nicht lösbar. Diese eine Zahl ersetzt jede vage Zielsetzung.</p>
+      </div>
+
+      <p>Zu solchen Sätzen wird im DACH-B2B-Markt bezahlt, wenn die Leistung direkt an Umsatz, Kosten oder Risiko des Kunden hängt und der Nachweis über Zertifizierung und Referenzen statt über einen Abschluss läuft. Realistische Felder: SAP- und ERP-Umfeld einschließlich S/4HANA-Migration, Salesforce- oder Dynamics-Implementierung, Data Engineering, Cloud- und DevOps-Architektur, Informationssicherheit und Regulatorik-Umsetzung, Performance Marketing mit echter Budgetverantwortung. Der Marktdurchschnitt für Freelancer liegt deutlich unter 250 € — genau das ist der Punkt. Prüfe die aktuellen Stundensatz-Studien selbst, bevor du dich auf eine Nische festlegst.</p>
+
+      <h3>Route 2 — Produktisiertes Geschäft</h3>
+      <p>Der eigentliche Zielzustand. Du verkaufst und sicherst Qualität, andere liefern. Bei 35 % Deckungsbeitrag brauchst du rund <span class="num">55.000 €</span> Monatsumsatz, getragen von vier bis sechs ausgelasteten Subunternehmern oder Angestellten. Das ist die einzige Konstruktion, die ohne Millionenvermögen dauerhaft unter 25 Wochenstunden führt.</p>
+      <p>Route 2 wird nicht neben Route 1 aufgebaut, sondern <em>aus</em> ihr. Wer versucht, direkt hier zu starten, verkauft eine Leistung, die er selbst nie erbracht hat, an Kunden, die er nicht kennt, mit Personal, das er nicht beurteilen kann.</p>
+
+      <h3>Route 3 — Provisionsvertrieb</h3>
+      <p>Der klassische studienfreie Weg zu hohen Einkommen: Immobilienvermittlung, Versicherungsvermittlung, gewerbliche Vermögensberatung, B2B-Softwarevertrieb. Alle drei erstgenannten sind in Österreich <strong>reglementierte Gewerbe</strong> und verlangen einen Befähigungsnachweis — der aber über Ausbildung und Prüfung erreichbar ist, nicht über ein Studium.</p>
+      <p>Die Rechnung ist ernüchternd: Bei 3 % Verkaufsprovision, hälftiger Teilung mit dem Büro und 15 % Kostenquote brauchst du rund 1,5 Mio. € vermitteltes Objektvolumen pro Monat — in Wien zwei bis vier Wohnungen, jeden Monat. Erreichbar für die Spitzengruppe, aber der Job <em>ist</em> Akquise, dauerhaft. Seit dem Bestellerprinzip im Mietbereich ist zudem ein ganzes Ertragsfeld weitgehend weggefallen. Ich führe die Route der Vollständigkeit halber, sie ist mit deiner Aufwandsvorgabe aber schlecht vereinbar.</p>
+
+      <h3>Route 4 — Einen bestehenden Betrieb kaufen</h3>
+      <p>Die schnellste Route zur Zahl, wenn Eigenkapital vorhanden ist — und die am meisten unterschätzte. Österreich steht in einer Übergabewelle: Tausende profitable Kleinbetriebe suchen Nachfolger, weil die Eigentümergeneration in Pension geht.</p>
+      <ul>
+        <li>Zielobjekt: Betrieb mit 250.000 € und mehr EBIT, mit vorhandener zweiter Führungsebene.</li>
+        <li>Kaufpreis im KMU-Bereich typisch beim Drei- bis Fünffachen des EBIT, also 750.000 bis 1,25 Mio. €.</li>
+        <li>Finanzierung aus Eigenmitteln von 20 bis 30 %, Bankkredit, Verkäuferdarlehen und öffentlichen Garantien. Erste Anlaufstellen: die Nachfolgebörse der Wirtschaftskammer sowie die Förderinstrumente der Austria Wirtschaftsservice.</li>
+        <li><strong>Der Gewerbeschein ist kein Hindernis:</strong> Wenn der Betrieb ein reglementiertes Gewerbe ausübt, für das dir der Befähigungsnachweis fehlt, stellst du einen gewerberechtlichen Geschäftsführer an. Das ist ein üblicher, vollkommen legaler Weg.</li>
+      </ul>
+      <p>Der Haken sind die 200.000 € Eigenmittel. Wenn du sie nicht hast, ist Route 4 kein Startpunkt, sondern das Ziel von Route 1.</p>
+    </div>
+  </section>
+
+  <!-- ================= § 4 ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">§ 4</span>
+      <h2>Empfehlung und Fahrplan</h2>
+    </div>
+
+    <div class="body">
+      <p class="lede">Route 1 als Einstieg, Route 2 als Endzustand. Kein Kapitalbedarf, die höchste Erfolgswahrscheinlichkeit der vier, und der einzige Weg, der bei deiner Aufwandsvorgabe landet, ohne dass vorher Millionen da sein müssen.</p>
+      <p>Wenn du über 200.000 € Eigenmittel verfügst, dreh die Reihenfolge um und geh direkt auf Route 4 — sie ist dann schneller und du kaufst geprüfte Zahlen statt Hoffnung.</p>
+    </div>
+
+    <ol class="phases">
+      <li class="phase">
+        <span class="phase-when">Monat 0–3</span>
+        <div class="phase-body">
+          <h3>Nische festlegen und einen bezahlten Beweis erbringen</h3>
+          <p>Vier Kriterien, alle müssen erfüllt sein: die Leistung ist B2B; sie hängt direkt an Umsatz, Kosten oder Risiko des Kunden; der Kompetenznachweis ist über Zertifizierung möglich; ein Nachfragetreiber existiert unabhängig von dir — Regulatorik, Systemmigration, Fachkräftemangel.</p>
+          <p>Ergebnis dieser Phase ist ein einziger bezahlter Auftrag, zu welchem Satz auch immer. Nicht ein Zertifikat, nicht eine Website. Ein Kunde, der überwiesen hat.</p>
+        </div>
+      </li>
+      <li class="phase">
+        <span class="phase-when">Monat 3–9</span>
+        <div class="phase-body">
+          <h3>Auf 100–120 € pro Stunde und volle Auslastung</h3>
+          <p>Jetzt wird der formale Rahmen gebaut: Gewerbeanmeldung, SVS-Anmeldung, Steuerberater, getrenntes Abgabenkonto. Details dazu in § 5.</p>
+          <p>Inhaltlich: drei dokumentierte Fallstudien mit belegbaren Zahlen beim Kunden. Diese Fallstudien sind später dein gesamter Preis-Hebel — ohne sie gibt es keinen Weg auf 250 €.</p>
+        </div>
+      </li>
+      <li class="phase">
+        <span class="phase-when">Monat 9–18</span>
+        <div class="phase-body">
+          <h3>Vom Stundenverkauf zum Ergebnisverkauf</h3>
+          <p>Der Sprung von 120 € auf 250 € gelingt nicht durch Verhandeln über Stundensätze, sondern durch den Wechsel der Verkaufseinheit: Festpreis für ein definiertes Ergebnis statt Zeit gegen Geld. Der Stundensatz wird dann zur Rechengröße, nicht zum Verhandlungsgegenstand.</p>
+          <p>Mechanik: Positionierung verengen, bis sie unbequem eng wirkt. Preis bei jedem dritten Neukunden um 20 % erhöhen, bis die Ablehnungsquote bei etwa 30 % liegt. Wer nie abgelehnt wird, ist zu billig — das ist die verlässlichste Einzelkennzahl in diesem Geschäft.</p>
+        </div>
+      </li>
+      <li class="phase">
+        <span class="phase-when">Monat 18–30</span>
+        <div class="phase-body">
+          <h3>Zielzahl erreichen und erstmals auslagern</h3>
+          <p>Zwei Retainer-Kunden zu je 8.000 bis 10.000 € monatlich bilden die Basis, Projektgeschäft füllt auf. Hier sind die 19.058 € erstmals erreichbar — bei etwa 30 Wochenstunden.</p>
+          <p>Parallel der erste Subunternehmer für die Teile der Lieferung, die nicht an deiner Person hängen. Das ist der Testlauf für Route 2, bewusst klein gehalten.</p>
+        </div>
+      </li>
+      <li class="phase">
+        <span class="phase-when">Monat 30–48</span>
+        <div class="phase-body">
+          <h3>Umbau auf Ownership</h3>
+          <p>Deine Rolle reduziert sich auf Verkauf, Qualitätssicherung und Rekrutierung. Vier bis sechs Deliverer tragen rund 55.000 € Monatsumsatz. Ab hier — und praktisch erst ab hier — ist die Zahl von deiner Anwesenheit entkoppelt und die Wochenstunden fallen unter 25.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="body">
+      <h4>Kennzahlen, die du monatlich misst</h4>
+      <ul>
+        <li><strong>Effektiver Stundensatz</strong> — Umsatz geteilt durch <em>alle</em> gearbeiteten Stunden, nicht nur die verrechenbaren. Die einzige ehrliche Zahl im ganzen Modell.</li>
+        <li><strong>Ablehnungsquote bei Angeboten</strong> — Zielwert 30 %. Bei 0 % bist du zu billig.</li>
+        <li><strong>Retainer-Anteil am Umsatz</strong> — Ziel über 60 %. Projektgeschäft allein macht die Zahl nicht planbar.</li>
+        <li><strong>Kundenkonzentration</strong> — kein Kunde über 40 % Umsatzanteil. Sonst bist du faktisch angestellt, ohne die Sicherheiten eines Dienstverhältnisses.</li>
+        <li><strong>Abgabenrücklage</strong> — siehe § 5. Die Kennzahl, an der die meisten scheitern.</li>
+      </ul>
+
+      <div class="box flag">
+        <span class="box-label">Abbruchkriterien — vorher festlegen, nicht nachher</span>
+        <p style="margin-bottom:0">Nach 12 Monaten kein Satz über 100 € durchsetzbar: die Nische trägt nicht, wechseln. Nach 24 Monaten kein einziger Retainer-Kunde: dein Angebot löst kein wiederkehrendes Problem. Nach 36 Monaten unter 8.000 € Monatsgewinn: die Route funktioniert für dich nicht, und Weitermachen kostet nur mehr Zeit.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= § 5 ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">§ 5</span>
+      <h2>Der rechtliche und steuerliche Rahmen in Österreich</h2>
+    </div>
+
+    <div class="body">
+      <h3>Gewerbeanmeldung</h3>
+      <p>Der wichtigste Unterschied: <strong>freies</strong> gegen <strong>reglementiertes</strong> Gewerbe. Freie Gewerbe brauchen keinen Befähigungsnachweis, die Anmeldung ist gebührenfrei und in der Regel am selben Tag erledigt.</p>
+      <ul>
+        <li><strong>Frei</strong> — IT-Dienstleistung, Werbeagentur, Grafik- und Kommunikationsdesign, Handelsgewerbe, Markt- und Meinungsforschung. Für praktisch alle in § 3 genannten Freelance-Felder ausreichend.</li>
+        <li><strong>Reglementiert</strong> — Unternehmensberatung einschließlich Unternehmensorganisation (§ 94 Z 74 und § 136 GewO), Immobilienmakler, Versicherungsvermittlung, gewerbliche Vermögensberatung. Hier ist ein Befähigungsnachweis nach § 18 GewO nötig.</li>
+      </ul>
+      <p>Bezeichne dich also nicht ohne Not als „Unternehmensberater“, wenn du IT-Dienstleistungen erbringst — die Bezeichnung zieht den Reglementierungstatbestand nach sich. Falls du das reglementierte Gewerbe wirklich brauchst und die formale Ausbildung fehlt: Die <strong>individuelle Befähigung nach § 19 GewO</strong> erlaubt den Nachweis über nachgewiesene gleichwertige Tätigkeit. Das ist ein etablierter Weg, keine Ausnahmeregelung.</p>
+
+      <h3>Sozialversicherung — hier scheitern die meisten</h3>
+      <p>In den ersten beiden Jahren schreibt die SVS nur vorläufige Beiträge auf Basis der Mindestbeitragsgrundlage von 551,10 € monatlich vor. Im dritten Jahr kommt die endgültige Bemessung auf Basis des tatsächlichen Gewinns — <strong>rückwirkend für beide Jahre</strong>.</p>
+
+      <div class="box flag">
+        <span class="box-label">Die teuerste vermeidbare Katastrophe</span>
+        <p style="margin-bottom:0">Wer in Jahr 1 und 2 gut verdient und die Nachbemessung nicht zurückgelegt hat, bekommt in Jahr 3 eine Nachforderung im fünfstelligen Bereich — parallel zur laufenden Einkommensteuervorauszahlung. <strong>Leg ab dem ersten Euro 50 % jedes Zahlungseingangs auf ein separates Konto,</strong> von dem du nichts anderes bezahlst. Bei der Zielgröße dieses Plans sind 47,5 % Abgabenquote plus Puffer exakt richtig kalkuliert. Diese eine Regel ist mehr wert als jeder Steuertrick in diesem Dokument.</p>
+      </div>
+
+      <h3>Umsatzsteuer</h3>
+      <p>Bis 55.000 € Jahresumsatz greift die Kleinunternehmerregelung, mit einer Toleranz von 10 % bis 60.500 €. Das ist eine Frage der Phase 1 und in wenigen Monaten erledigt — danach UID-Nummer, Voranmeldungen, Vorsteuerabzug. Im B2B-Geschäft ist das kein Nachteil, sondern einer: Deine Kunden ziehen die Vorsteuer, du ziehst deine.</p>
+
+      <h3>Rechtsform und Zeitpunkt</h3>
+      <p>Starte als Einzelunternehmen. Der Wechsel in eine GmbH lohnt sich nach § 1 erst im Bereich ab etwa 150.000 € Jahresgewinn — und der Vorteil liegt weniger in der laufenden Steuer als in Haftungsbegrenzung und der Möglichkeit, Gewinne zu 23 % im Unternehmen zu thesaurieren. Das Mindeststammkapital liegt seit 2024 bei 10.000 €; alternativ steht die Flexible Kapitalgesellschaft zur Verfügung.</p>
+
+      <h3>Was das kostet</h3>
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Posten</th>
+              <th scope="col" class="r">Größenordnung p. a.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Steuerberatung, Einzelunternehmen</th><td class="r">2.500–6.000 €</td></tr>
+            <tr><th scope="row">Steuerberatung und Bilanz, GmbH</th><td class="r">4.000–10.000 €</td></tr>
+            <tr><th scope="row">Kammerumlage, Versicherungen, Software</th><td class="r">1.500–3.000 €</td></tr>
+            <tr><th scope="row">Betriebshaftpflicht und Vermögensschaden</th><td class="r">600–2.500 €</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Ein Steuerberater ist ab dieser Größenordnung keine Option, sondern Infrastruktur. Er verdient sein Honorar allein über Gewinnfreibetrag, Vorauszahlungssteuerung und Rechtsformwahl mehrfach zurück.</p>
+    </div>
+  </section>
+
+  <!-- ================= § 6 ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">§ 6</span>
+      <h2>Die EU-Variante — separat betrachtet</h2>
+    </div>
+
+    <div class="body">
+      <p>Du hast den EU-Raum ausdrücklich getrennt angefragt. Das zerfällt in zwei völlig verschiedene Fälle, die häufig verwechselt werden — mit teuren Folgen.</p>
+
+      <h3>Fall A — Du bleibst in Österreich ansässig und verkaufst EU-weit</h3>
+      <p>Rechtlich unspektakulär und der mit Abstand wichtigere Hebel. Die Dienstleistungsfreiheit gilt unmittelbar, B2B-Leistungen unterliegen dem Empfängerortprinzip mit Reverse Charge, dazu kommt die Zusammenfassende Meldung. Für digitale B2C-Produkte gibt es den One-Stop-Shop. Steuerlich ändert sich für dich nichts: Der Gewinn bleibt in Österreich steuerpflichtig.</p>
+      <p class="lede">Der EU-Binnenmarkt vergrößert deinen Markt von neun auf über 440 Millionen Menschen. Das ist der eigentliche Grund, EU-weit zu denken — nicht die Steuer.</p>
+      <p>Für Route 1 heißt das konkret: Der deutsche Markt allein ist rund zehnmal so groß wie der österreichische, gleiche Sprache, gleiche Rechtstradition, und die Tagsätze liegen im Schnitt höher. Wer in Wien um 150 € kämpft, findet in München oder Frankfurt oft 250 € für dieselbe Leistung. <strong>Das ist der schnellste verfügbare Preishebel im gesamten Plan</strong> und er kostet dich nichts außer der Entscheidung, remote zu arbeiten.</p>
+
+      <h3>Fall B — Du verlegst deine steuerliche Ansässigkeit</h3>
+      <p>Das ist die einzige Struktur, die die 228.700 € tatsächlich senkt — je nach Land auf 150.000 bis 175.000 €. Aber nur, wenn du wirklich umziehst.</p>
+
+      <div class="box flag">
+        <span class="box-label">Was definitiv nicht funktioniert</span>
+        <p>Eine Gesellschaft in Estland, Zypern, Bulgarien oder Dubai gründen und weiter in Wien sitzen. Drei voneinander unabhängige Normen greifen: Der <strong>Ort der Geschäftsleitung</strong> (§ 27 BAO) begründet unbeschränkte Körperschaftsteuerpflicht in Österreich — die Auslandsgesellschaft wird schlicht österreichisch besteuert. Die <strong>Hinzurechnungsbesteuerung</strong> (§ 10a KStG) rechnet Passiveinkünfte niedrigbesteuerter Auslandsgesellschaften direkt zu. Und der <strong>Missbrauchstatbestand</strong> (§ 22 BAO) greift bei Gestaltungen ohne wirtschaftlichen Gehalt.</p>
+          <p style="margin-bottom:0">Dazu kommt der automatische Informationsaustausch: Die Konten <em>sind</em> gemeldet. Das ist kein Restrisiko, sondern ein Zeitproblem — und Abgabenhinterziehung ist finanzstrafrechtlich relevant. Diese Modelle werden im Netz massiv beworben und funktionieren für Ansässige nicht.</p>
+      </div>
+
+      <p><strong>Was funktioniert, ist der echte Wegzug:</strong> Hauptwohnsitz abmelden, Mittelpunkt der Lebensinteressen tatsächlich verlagern, über 183 Tage vor Ort, wirtschaftliche Substanz im Zielland. Die Ansässigkeit entscheidet im Zweifel die Tie-Breaker-Regel des jeweiligen Doppelbesteuerungsabkommens — und die stellt auf Wohnstätte, persönliche Bindungen und gewöhnlichen Aufenthalt ab, nicht auf ein Behördenformular.</p>
+
+      <div class="box">
+        <span class="box-label">Vor jedem Wegzug zu klären</span>
+        <p style="margin-bottom:0"><strong>Die Wegzugsbesteuerung nach § 27 Abs 6 EStG</strong> fingiert einen Verkauf deines steuerhängigen Kapitalvermögens im Privatvermögen — GmbH-Anteile, Wertpapierdepot — zum Wegzugszeitpunkt. Beim Wegzug in einen EU- oder EWR-Staat mit umfassender Amts- und Vollstreckungshilfe gibt es auf Antrag die Nichtfestsetzung bis zur tatsächlichen Veräußerung beziehungsweise eine Ratenzahlung über sieben Jahre. Der Antrag muss in der Steuererklärung gestellt werden. Wer das erst hinterher merkt, hat unter Umständen eine sechsstellige Steuer auf einen Verkauf ausgelöst, der nie stattgefunden hat. Ebenfalls vorab zu klären: die Sozialversicherungszuordnung nach der Verordnung 883/2004.</p>
+      </div>
+
+      <h4>Zielländer zur Orientierung</h4>
+      <p>Diese Regime ändern sich häufig — Portugals NHR-Regime etwa wurde 2024 abgeschafft und durch eine deutlich engere Nachfolge ersetzt, Rumäniens Micro-Company-Regelung mehrfach verschärft. Die Tabelle ist eine Vorauswahl für das Gespräch mit einem lokalen Berater, keine Entscheidungsgrundlage.</p>
+
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Land</th>
+              <th scope="col">Regime</th>
+              <th scope="col">Was es tatsächlich verlangt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Bulgarien</th>
+              <td>10 % Flat Tax auf Einkommen, 10 % Körperschaftsteuer, 5 % auf Dividenden</td>
+              <td>Die einfachste Rechnung der EU — und du lebst tatsächlich in Bulgarien.</td>
+            </tr>
+            <tr>
+              <th scope="row">Zypern</th>
+              <td>12,5 % Körperschaftsteuer, Non-Dom-Status befreit Dividenden von der Sonderabgabe</td>
+              <td>Non-Dom gilt 17 Jahre. Gesundheitsbeitrag gedeckelt. Substanz vor Ort wird geprüft.</td>
+            </tr>
+            <tr>
+              <th scope="row">Malta</th>
+              <td>Rückerstattungssystem, effektiv sehr niedrige Belastung auf ausgeschüttete Gewinne</td>
+              <td>Aufwendiges und teures Setup, laufende Substanzanforderungen. Nur ab deutlich höheren Gewinnen sinnvoll.</td>
+            </tr>
+            <tr>
+              <th scope="row">Estland</th>
+              <td>0 % auf thesaurierte Gewinne, Besteuerung erst bei Ausschüttung</td>
+              <td>Nur sinnvoll, wenn reinvestiert wird. <strong>E-Residency begründet keine Steuerresidenz</strong> — der häufigste und teuerste Irrtum in diesem Feld.</td>
+            </tr>
+            <tr>
+              <th scope="row">Italien, Griechenland</th>
+              <td>Zuzugsregime mit teilweiser Steuerbefreiung für Neuansässige</td>
+              <td>An Voraussetzungen und Fristen gebunden, oft mit Mindestaufenthaltsdauer. Im Einzelfall attraktiv.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Die nüchterne Abwägung: Der Vorteil liegt bei 60.000 bis 80.000 € jährlich. Der Preis ist, dass dein Leben tatsächlich dort stattfindet — Familie, Freunde, Sprache, Gesundheitssystem. Das rechnet sich erst ab etwa 200.000 € Jahresgewinn und nur, wenn dein Geschäft echt ortsunabhängig ist. Solange du die Zielzahl noch nicht erreichst, ist der Wegzug eine Ablenkung von der eigentlichen Aufgabe.</p>
+
+      <p class="lede">Für den EU-Raum lautet die Antwort deshalb: EU-weit <em>verkaufen</em>, nicht EU-weit <em>wohnen</em>. Der Markt ist der Hebel, die Ansässigkeit ist eine Optimierung — und zwar die letzte, nicht die erste.</p>
+    </div>
+  </section>
+
+  <!-- ================= § 7 ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">§ 7</span>
+      <h2>Was an dieser Zahl scheitert</h2>
+    </div>
+
+    <div class="body">
+      <p>Der Vollständigkeit halber, weil dir all das begegnen wird. Nicht weil es illegal wäre — sondern weil es an 19.058 € Monatsgewinn scheitert.</p>
+
+      <div class="scroller">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Modell</th>
+              <th scope="col">Warum es die Zahl nicht trägt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Dropshipping, Amazon FBA</th><td>Marge nach Werbekosten typisch im einstelligen Prozentbereich. Für 19.000 € Gewinn bräuchtest du 200.000 € und mehr Monatsumsatz — mit Vorfinanzierung, Retouren und Plattformrisiko. Das ist Handel, kein passives Einkommen.</td></tr>
+            <tr><th scope="row">Trading, Krypto, Signaldienste</th><td>Kein planbarer Cashflow, sondern Varianz. Wer damit verlässlich 19.000 € monatlich erzeugt, verwaltet fremdes Kapital und ist konzessionspflichtig.</td></tr>
+            <tr><th scope="row">Print on Demand, Merch</th><td>Deckungsbeitrag im niedrigen einstelligen Eurobereich pro Stück. Die nötige Stückzahl ist der eigentliche Job.</td></tr>
+            <tr><th scope="row">Online-Kurs, digitales Produkt</th><td>Funktioniert — aber ausschließlich als <em>Folge</em> vorhandener Reichweite oder eines Rufs. Als Startpunkt verkauft man Expertise, die man noch nicht hat, an ein Publikum, das es noch nicht gibt.</td></tr>
+            <tr><th scope="row">Faceless YouTube, KI-Content</th><td>Wachsendes Angebot bei sinkenden Werbeerlösen pro Aufruf, vollständige Plattformabhängigkeit. Ein Algorithmuswechsel kann die Einnahmen über Nacht halbieren.</td></tr>
+            <tr><th scope="row">Vermietung auf Kredit als „passives Einkommen“</th><td>Bei aktuellen Zinsen und österreichischen Nettorenditen trägt sich das über Jahre nicht aus dem Cashflow. Der Ertrag liegt in der Wertsteigerung, und die zahlt keine Miete.</td></tr>
+            <tr><th scope="row">Strukturvertrieb, MLM</th><td>Der Ertrag entsteht überwiegend aus der Rekrutierung, nicht aus dem Produkt. Die Verdienstoffenlegungen der Anbieter selbst zeigen, wie selten die Zielgröße erreicht wird.</td></tr>
+            <tr><th scope="row">Auslandsfirma bei Wohnsitz in Wien</th><td>Siehe § 6. Funktioniert rechtlich nicht und ist finanzstrafrechtlich relevant.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Das gemeinsame Muster: Alle diese Modelle haben eine niedrige Marge pro Transaktion und brauchen deshalb Volumen — und Volumen ist Arbeit. Route 1 und 2 drehen das um: hohe Marge pro Transaktion, wenige Transaktionen. Genau deshalb sind sie die einzigen, die mit deiner Aufwandsvorgabe vereinbar sind.</p>
+    </div>
+  </section>
+
+  <!-- ================= § 8 ================= -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">§ 8</span>
+      <h2>Die ersten dreißig Tage</h2>
+    </div>
+
+    <div class="body">
+      <p>Konkret, überprüfbar, ohne Vorbereitung sofort startbar.</p>
+      <ol>
+        <li><strong>Nische gegen die vier Kriterien aus § 4 prüfen</strong> — drei Kandidaten aufschreiben, jeden gegen alle vier Kriterien durchgehen, den schwächsten streichen.</li>
+        <li><strong>Marktpreise verifizieren</strong> — aktuelle Stundensatz-Studien und Projektbörsen für den DACH-Raum durchsehen. Ist der Zielsatz von 250 € in deiner Nische real belegbar? Wenn nein: andere Nische. Diese Prüfung entscheidet über den ganzen Plan.</li>
+        <li><strong>Zehn Gespräche mit potenziellen Kunden</strong> — nicht verkaufen, nur fragen, welches Problem sie gerade Geld kostet. Zehn Gespräche sind mehr wert als drei Monate Recherche.</li>
+        <li><strong>Ersten Auftrag annehmen</strong>, zu welchem Preis auch immer. Der erste Kunde ist ein Beweis, kein Geschäftsmodell.</li>
+        <li><strong>Gewerbe anmelden</strong> — freies Gewerbe, gebührenfrei, meist noch am selben Tag erledigt.</li>
+        <li><strong>Bei der SVS anmelden</strong> und die Nachbemessung im dritten Jahr fest einplanen.</li>
+        <li><strong>Zweites Konto eröffnen</strong> und ab dem ersten Zahlungseingang 50 % dorthin überweisen. Ohne Ausnahme.</li>
+        <li><strong>Steuerberater mit KMU-Schwerpunkt suchen</strong> — Erstgespräch, Rechtsform und Gewinnfreibetrag besprechen.</li>
+        <li><strong>Betriebshaftpflicht abschließen</strong>, im IT- und Beratungsumfeld mit Vermögensschadendeckung.</li>
+        <li><strong>Kennzahlenblatt anlegen</strong> — die fünf Werte aus § 4, monatlich, eine Zeile pro Monat. Mehr Werkzeug brauchst du nicht.</li>
+      </ol>
+
+      <div class="box key">
+        <span class="box-label">Der Kern in vier Sätzen</span>
+        <p>10.000 € netto sind 228.700 € Jahresgewinn — knapp 19.100 € jeden Monat. Mit wenig Aufwand ist das nur oberhalb von 250 € pro Stunde erreichbar, oder wenn andere für dich liefern.</p>
+        <p style="margin-bottom:0">Der Weg dorthin führt über eine enge B2B-Nische mit Zertifizierung statt Studium, über den deutschen Markt statt nur den österreichischen, und über den Wechsel vom Stundenverkauf zum Ergebnisverkauf. Rechne mit drei bis vier Jahren — und leg von Tag eins die Hälfte jedes Eingangs für die Abgaben zurück.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Quellen ================= -->
+  <div class="sources">
+    <h2>Grundlagen der Berechnungen</h2>
+    <ol>
+      <li>Einkommensteuertarif 2026: Stufen bei 13.539 / 21.992 / 36.458 / 70.365 / 104.859 / 1.000.000 €, Sätze 20 / 30 / 40 / 48 / 50 / 55 %. Valorisiert um 1,733 %. — <a href="https://www.wko.at/steuern/einkommen-koerperschaftsteuer-2026">WKO</a>, <a href="https://www.bmf.gv.at/themen/steuern/arbeitnehmerveranlagung/steuertarif-steuerabsetzbetraege/steuertarif-steuerabsetzbetraege.html">BMF</a>, <a href="https://www.usp.gv.at/themen/steuern-finanzen/einkommensteuer-ueberblick/weitere-informationen-est/tarifstufen.html">USP</a></li>
+      <li>SVS 2026: Höchstbeitragsgrundlage 8.085 € monatlich / 97.020 € jährlich, Mindestbeitragsgrundlage 551,10 €. Sätze PV 18,5 %, KV 6,8 %, Selbständigenvorsorge 1,53 %, Unfallversicherung 155,40 € jährlich. — <a href="https://www.svs.at/cdscontent/load?contentid=10008.763406&amp;version=1672393252">SVS-Beitragstabelle</a>, <a href="https://www.wko.at/entlohnung/beitragswesen-selbstaendige-2026">WKO</a></li>
+      <li>Gewinnfreibetrag: Grundfreibetrag 15 % der ersten 33.000 € (max. 4.950 €), investitionsbedingt gestaffelt 13 / 7 / 4,5 %, Gesamtdeckel 46.400 €. — <a href="https://www.wko.at/steuern/der-gewinnfreibetrag">WKO</a></li>
+      <li>Körperschaftsteuer 23 %, KESt 27,5 %, kombinierte Belastung 44,175 %. Der oft zitierte Wert von 45,625 % beruht auf der früheren 25-prozentigen KöSt. — <a href="https://www.wko.at/steuern/einkommen-koerperschaftsteuer-2026">WKO</a></li>
+      <li>SVS-Pflicht bei Ausschüttungen an wesentlich beteiligte Gesellschafter-Geschäftsführer, Meldung über die KESt-Anmeldung seit 2016. — <a href="https://kpmg.com/at/de/media/newsletter/tax-news/2024/12/tn-kmu-gesellschafter-gf-pflichtversicherung-durch-gewinnausschuettungen.html">KPMG Tax News</a>, <a href="https://www.bdo.at/de-at/blog/tax-news/tax-news-2-2022/gewinnausschuttung-und-gsvg-pflicht">BDO</a></li>
+      <li>Kleinunternehmerregelung: 55.000 € Umsatzgrenze mit 10 % Toleranz bis 60.500 €.</li>
+      <li>Gewerberecht: Unternehmensberatung als reglementiertes Gewerbe nach § 94 Z 74 und § 136 GewO 1994, individuelle Befähigung nach § 19 GewO. — <a href="https://www.jusline.at/gesetz/gewo/paragraf/136">§ 136 GewO</a>, <a href="https://www.bmwet.gv.at/Themen/Unternehmen/Gewerbe/Gewerbetaetigkeiten.html">BMWET</a></li>
+      <li>Wegzugsbesteuerung nach § 27 Abs 6 EStG, Nichtfestsetzung beziehungsweise Ratenzahlung über sieben Jahre bei Wegzug in EU- und EWR-Staaten mit umfassender Amts- und Vollstreckungshilfe.</li>
+    </ol>
+
+    <p class="disclaimer">Alle Steuer- und Sozialversicherungswerte beziehen sich auf die Rechtslage 2026 und werden jährlich valorisiert. Die Berechnungen sind Modellrechnungen ohne Berücksichtigung individueller Absetzbeträge, weiterer Einkünfte oder Sonderausgaben und ersetzen keine Steuer- oder Rechtsberatung. Vor Gründung, Rechtsformwahl und insbesondere vor jedem Wegzug ist die Abstimmung mit einem Steuerberater erforderlich; im Fall eines Wegzugs zusätzlich mit einem Berater im Zielland. Die zu Zielländern genannten Regime ändern sich häufig und sind vor jeder Entscheidung auf ihren aktuellen Stand zu prüfen.</p>
+  </div>
+
+</div>
