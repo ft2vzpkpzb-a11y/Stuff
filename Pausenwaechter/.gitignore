@@ -1,0 +1,10 @@
+# Von XcodeGen erzeugt — gehoert nicht ins Repo.
+Pausenwaechter.xcodeproj/
+Pausenwaechter.xcworkspace/
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+.DS_Store

@@ -1,3 +1,31 @@
+# Stuff
+
+Zwei voneinander unabhängige Projekte.
+
+| Projekt | Was es ist |
+|---|---|
+| [**Pausenwächter**](Pausenwaechter/) | iPhone-App, die ausgewählte Apps nach Zeitplan oder Nutzungsdauer sperrt — wieder aufsperren per selbst gesetztem Code oder Atempause |
+| [**10.000 € netto**](plan-10k-netto-oesterreich.html) | Erwerbskonzept für Österreich und den EU-Raum, Rechtslage 2026 |
+
+---
+
+## Pausenwächter
+
+Native iOS-App (SwiftUI) auf Basis von Apples Screen Time API. Du legst fest,
+welche Apps ab wann gesperrt sind; hinein kommst du über einen selbst
+definierten Code, über eine selbst definierte Atempause oder über beides
+hintereinander.
+
+- **Quellcode:** [`Pausenwaechter/`](Pausenwaechter/)
+- **Bauen:** [`Pausenwaechter/README.md`](Pausenwaechter/README.md) — braucht
+  einen Mac mit Xcode und ein iPhone mit iOS 16+
+
+Vier Targets: die App selbst plus drei App-Extensions (Zeitplan-Überwachung,
+Gestaltung des Sperrbildschirms, Reaktion auf dessen Knöpfe). Alles bleibt auf
+dem Gerät — kein Konto, kein Server.
+
+---
+
 # 10.000 € netto pro Monat — Konzept für Österreich und den EU-Raum
 
 Erwerbskonzept für 10.000 € netto monatlich in Österreich, ohne Studienabschluss,

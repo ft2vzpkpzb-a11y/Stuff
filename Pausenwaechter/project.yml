@@ -1,0 +1,108 @@
+# XcodeGen-Beschreibung des Projekts.
+# Erzeugt Pausenwaechter.xcodeproj mit der App und ihren drei Extensions.
+#
+#   brew install xcodegen
+#   cd Pausenwaechter && xcodegen generate
+#
+# Vorher ./configure.sh ausfuehren, um Bundle-ID und Team einzutragen.
+
+name: Pausenwaechter
+
+options:
+  bundleIdPrefix: dev.pausenwaechter
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+    TARGETED_DEVICE_FAMILY: "1"
+    SWIFT_EMIT_LOC_STRINGS: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+
+# Die Dateien in Sources/Shared werden in alle vier Targets kompiliert.
+# App und Extensions laufen in getrennten Prozessen und koennen kein
+# gemeinsames Modul teilen, ohne ein eigenes Framework einzufuehren —
+# fuer diesen Umfang waere das mehr Aufwand als Nutzen.
+targets:
+
+  Pausenwaechter:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources/App
+        excludes: ["Info.plist", "*.entitlements"]
+      - path: Sources/Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.pausenwaechter.app
+        PRODUCT_NAME: Pausenwaechter
+        INFOPLIST_FILE: Sources/App/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Sources/App/Pausenwaechter.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_PREVIEWS: YES
+    dependencies:
+      - target: PausenwaechterMonitor
+        embed: true
+      - target: PausenwaechterShield
+        embed: true
+      - target: PausenwaechterShieldAction
+        embed: true
+
+  PausenwaechterMonitor:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Sources/Monitor
+        excludes: ["Info.plist", "*.entitlements"]
+      - path: Sources/Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.pausenwaechter.app.Monitor
+        PRODUCT_NAME: PausenwaechterMonitor
+        INFOPLIST_FILE: Sources/Monitor/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Sources/Monitor/Monitor.entitlements
+
+  PausenwaechterShield:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Sources/ShieldConfig
+        excludes: ["Info.plist", "*.entitlements"]
+      - path: Sources/Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.pausenwaechter.app.Shield
+        PRODUCT_NAME: PausenwaechterShield
+        INFOPLIST_FILE: Sources/ShieldConfig/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Sources/ShieldConfig/ShieldConfig.entitlements
+
+  PausenwaechterShieldAction:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Sources/ShieldAction
+        excludes: ["Info.plist", "*.entitlements"]
+      - path: Sources/Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.pausenwaechter.app.ShieldAction
+        PRODUCT_NAME: PausenwaechterShieldAction
+        INFOPLIST_FILE: Sources/ShieldAction/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Sources/ShieldAction/ShieldAction.entitlements
+
+schemes:
+  Pausenwaechter:
+    build:
+      targets:
+        Pausenwaechter: all
+    run:
+      config: Debug
+    archive:
+      config: Release
