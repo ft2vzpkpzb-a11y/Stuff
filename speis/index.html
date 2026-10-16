@@ -1,0 +1,1086 @@
+<title>Die Speis</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Figtree:wght@400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  /* Layout: Handy-App in einer Spalte (max. 760px) – Kopfzeile oben, Reiter unten, Eingaben in Bottom-Sheets */
+  :root {
+    --bg: #EDF0F4;
+    --surface: #FFFFFF;
+    --surface-2: #E3E8EF;
+    --ink: #121923;
+    --ink-2: #364254;
+    --muted: #66728A;
+    --rule: #D3DAE3;
+    --accent: #2346C8;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E1E7FB;
+    --tag: #FFD43B;
+    --tag-ink: #1F1A00;
+    --ok: #1D7549;
+    --ok-soft: #DCF0E5;
+    --warn: #8F5400;
+    --warn-soft: #FAEACD;
+    --bad: #B3261E;
+    --bad-soft: #F8DDDA;
+    --scrim: rgba(12, 17, 26, .45);
+    --shadow: 0 1px 2px rgba(18,25,35,.06), 0 12px 32px -20px rgba(18,25,35,.4);
+
+    --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --r: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E131A; --surface: #161D26; --surface-2: #1E2732; --ink: #E5EAF1; --ink-2: #B7C1CE; --muted: #8592A5; --rule: #283241;
+      --accent: #8098FF; --accent-ink: #0A0F22; --accent-soft: #1B2446; --tag: #FFD43B; --tag-ink: #1F1A00;
+      --ok: #5DCB90; --ok-soft: #12291D; --warn: #F0B44C; --warn-soft: #2D2210; --bad: #FF8A80; --bad-soft: #351819;
+      --scrim: rgba(0,0,0,.6); --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -20px rgba(0,0,0,.8);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E131A; --surface: #161D26; --surface-2: #1E2732; --ink: #E5EAF1; --ink-2: #B7C1CE; --muted: #8592A5; --rule: #283241;
+    --accent: #8098FF; --accent-ink: #0A0F22; --accent-soft: #1B2446; --tag: #FFD43B; --tag-ink: #1F1A00;
+    --ok: #5DCB90; --ok-soft: #12291D; --warn: #F0B44C; --warn-soft: #2D2210; --bad: #FF8A80; --bad-soft: #351819;
+    --scrim: rgba(0,0,0,.6); --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -20px rgba(0,0,0,.8);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.45;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+  .wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .num, .mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+  /* Kopfzeile */
+  .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--surface); border-bottom: 1px solid var(--rule); }
+  .top .wrap { display: flex; align-items: center; gap: 10px; padding-block: 10px; }
+  .brand { display: flex; align-items: baseline; gap: 8px; margin-right: auto; min-width: 0; }
+  .brand h1 { font-size: 24px; font-weight: 800; letter-spacing: -.02em; line-height: 1; white-space: nowrap; }
+  @media (max-width: 440px) { .sync { font-size: 0; gap: 0; } }
+  .brand h1 span { color: var(--accent); }
+  .sync { font-size: 12px; color: var(--muted); display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .sync::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+  .sync.ok::before { background: var(--ok); }
+  .sync.saving::before { background: var(--warn); }
+  .sync.err::before, .sync.local::before { background: var(--bad); }
+  .month-pill { border: 1px solid var(--rule); background: var(--bg); border-radius: 999px; padding: 5px 11px; font-size: 13px; white-space: nowrap; }
+  .month-pill b { font-family: var(--f-mono); font-weight: 600; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--rule); background: var(--bg); display: grid; place-items: center; flex: none; }
+  .icon-btn svg { width: 18px; height: 18px; stroke: var(--ink-2); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Reiter unten */
+  .tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9; background: var(--surface); border-top: 1px solid var(--rule);
+    padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+  .tabs .in { max-width: 760px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
+  .tab { background: none; border: 0; padding: 9px 4px 10px; display: grid; justify-items: center; gap: 3px; font-size: 12px; color: var(--muted); font-weight: 600; position: relative; }
+  .tab svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .tab[aria-current="page"] { color: var(--accent); }
+  .tab .badge { position: absolute; top: 4px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--bad); color: var(--surface); font-size: 11px; line-height: 18px; font-family: var(--f-mono); }
+
+  /* Inhalt */
+  main.wrap { padding-block: 16px 24px; display: grid; gap: 18px; }
+  .banner { border-radius: var(--r); padding: 12px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 14px; background: var(--warn-soft); color: var(--ink); }
+  .banner p { margin: 0; flex: 1 1 240px; }
+  .banner.info { background: var(--accent-soft); }
+  .lead { display: grid; gap: 6px; }
+  .lead h2 { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+  .lead p { margin: 0; color: var(--ink-2); }
+  .lead .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+
+  .status { display: flex; flex-wrap: wrap; gap: 8px; }
+  .status span { border-radius: 999px; padding: 5px 11px; font-size: 13px; background: var(--surface); border: 1px solid var(--rule); }
+  .status b { font-family: var(--f-mono); font-weight: 600; }
+  .status .s-bad { background: var(--bad-soft); border-color: transparent; color: var(--bad); }
+  .status .s-warn { background: var(--warn-soft); border-color: transparent; color: var(--warn); }
+
+  .toolbar { display: flex; gap: 8px; }
+  .toolbar input { flex: 1; min-width: 0; }
+  input[type="search"], .f input, .f select, .f textarea, .inline-add input {
+    border: 1px solid var(--rule); background: var(--surface); border-radius: 10px; padding: 9px 11px; width: 100%; min-width: 0;
+  }
+  .chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+  .chip { flex: none; border: 1px solid var(--rule); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .btn { border: 1px solid var(--rule); background: var(--surface); border-radius: 10px; padding: 8px 13px; font-weight: 600; font-size: 14px; white-space: nowrap; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.danger { color: var(--bad); }
+  .btn.danger.armed { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+  .btn.small { padding: 5px 10px; font-size: 13px; }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  .group { display: grid; gap: 8px; }
+  .group-h { font-family: var(--f-body); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; padding: 0 2px; }
+  .group-h span { letter-spacing: 0; text-transform: none; font-family: var(--f-mono); font-weight: 500; }
+  .rows { list-style: none; margin: 0; padding: 0; background: var(--surface); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 10px 12px; border-top: 1px solid var(--rule); }
+  .row:first-child { border-top: 0; }
+  .row.two { grid-template-columns: minmax(0, 1fr) auto; }
+  .row-main { display: grid; gap: 1px; text-align: left; background: none; border: 0; padding: 2px 0; min-width: 0; }
+  .row-name { font-weight: 600; overflow-wrap: anywhere; }
+  .row-sub { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+  .mult { font-family: var(--f-mono); font-weight: 500; color: var(--accent); white-space: nowrap; }
+  .ex { font-style: normal; font-size: 11px; font-weight: 600; color: var(--muted); border: 1px dashed var(--muted); border-radius: 5px; padding: 0 5px; margin-left: 4px; vertical-align: 1px; }
+  .t-bad { color: var(--bad); font-style: normal; font-weight: 600; }
+  .t-warn { color: var(--warn); font-style: normal; font-weight: 600; }
+
+  .pill { border-radius: 999px; padding: 2px 9px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .pill.bad { background: var(--bad-soft); color: var(--bad); }
+  .pill.warn { background: var(--warn-soft); color: var(--warn); }
+  .pill.ok { background: var(--ok-soft); color: var(--ok); }
+  .pill.none { visibility: hidden; }
+
+  .stepper { display: flex; align-items: center; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+  .stepper button { width: 34px; height: 36px; border: 0; background: var(--bg); font-size: 18px; line-height: 1; color: var(--ink-2); }
+  .stepper .qty { min-width: 46px; text-align: center; display: grid; line-height: 1.05; padding: 0 4px; }
+  .stepper .qty b { font-family: var(--f-mono); font-weight: 600; font-size: 15px; }
+  .stepper .qty small { font-size: 10px; color: var(--muted); }
+  .stepper.zero .qty b { color: var(--bad); }
+
+  /* Preisetikett – wie das Grundpreis-Schild am Regal */
+  .tag { display: grid; justify-items: end; line-height: 1.1; padding: 4px 8px; border-radius: 6px; background: var(--surface-2); min-width: 74px; }
+  .tag small { font-size: 10px; color: var(--muted); font-family: var(--f-mono); }
+  .tag b { font-family: var(--f-mono); font-weight: 600; font-size: 14px; }
+  .tag.aktion { background: var(--tag); color: var(--tag-ink); }
+  .tag.aktion small { color: var(--tag-ink); opacity: .75; }
+  .tag.none { color: var(--muted); font-size: 12px; justify-items: center; }
+
+  .card { background: var(--surface); border-radius: var(--r); box-shadow: var(--shadow); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+  .card-h { font-family: var(--f-body); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+  .bars li { display: grid; grid-template-columns: minmax(70px, 30%) 1fr auto; align-items: center; gap: 10px; font-size: 14px; }
+  .bars li > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bars .bar { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+  .bars .bar i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+  .bars b { font-family: var(--f-mono); font-weight: 600; font-size: 13px; }
+
+  .big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+  .big .v { font-family: var(--f-display); font-weight: 800; font-size: 40px; letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .big .of { color: var(--muted); }
+  .meter { height: 10px; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+  .meter i { display: block; height: 100%; background: var(--ok); border-radius: 5px; }
+  .meter.warn i { background: var(--warn); }
+  .meter.bad i { background: var(--bad); }
+  .kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .kv div { display: grid; gap: 1px; }
+  .kv span { font-size: 12px; color: var(--muted); }
+  .kv b { font-family: var(--f-mono); font-weight: 600; }
+  .kv b.good { color: var(--ok); }
+  .month-nav { display: flex; align-items: center; gap: 8px; }
+  .month-nav h2 { font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin-right: auto; }
+  .chart { width: 100%; height: auto; display: block; }
+  .chart text { font-family: var(--f-mono); font-size: 12px; fill: var(--muted); }
+  .chart .val { fill: var(--ink-2); font-weight: 600; }
+
+  .empty { background: var(--surface); border: 1px dashed var(--rule); border-radius: var(--r); padding: 22px 18px; display: grid; gap: 8px; }
+  .empty h3 { font-size: 20px; }
+  .empty p { margin: 0; color: var(--ink-2); max-width: 60ch; }
+  .empty-mini { color: var(--muted); padding: 12px 2px; font-size: 14px; }
+  .inline-add { display: flex; gap: 8px; margin-top: 4px; }
+
+  /* Sheets */
+  .sheet { position: fixed; inset: 0; z-index: 20; background: var(--scrim); display: flex; align-items: flex-end; justify-content: center; }
+  .panel { background: var(--surface); width: 100%; max-width: 640px; max-height: 92%; overflow-y: auto; border-radius: 18px 18px 0 0;
+    padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); box-shadow: var(--shadow); }
+  @media (min-width: 720px) { .sheet { align-items: center; } .panel { border-radius: 18px; padding: 22px; max-height: 86%; } }
+  .panel h2 { font-size: 22px; font-weight: 800; letter-spacing: -.01em; }
+  .form { display: grid; gap: 12px; }
+  .f { display: grid; gap: 4px; min-width: 0; }
+  .f > span { font-size: 12px; font-weight: 600; color: var(--ink-2); }
+  .f textarea { min-height: 120px; resize: vertical; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 420px) { .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .fs { border: 1px solid var(--rule); border-radius: 12px; padding: 10px 12px 12px; margin: 0; display: grid; gap: 8px; min-width: 0; }
+  .fs legend { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 0 4px; }
+  .hint { margin: 0; font-size: 12.5px; color: var(--muted); }
+  .check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .check input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .sheet-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding-top: 4px; }
+  .grow { flex: 1; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 10px; }
+  .tbl { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  .tbl th, .tbl td { padding: 7px 9px; border-top: 1px solid var(--rule); text-align: left; white-space: nowrap; }
+  .tbl thead th { border-top: 0; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: var(--bg); }
+  .tbl .r { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+  .tbl tr.akt td:first-child { box-shadow: inset 3px 0 0 var(--tag); }
+  .x { border: 0; background: none; color: var(--muted); padding: 2px 6px; font-size: 16px; }
+  .rules { display: grid; gap: 12px; margin: 0; padding-left: 20px; }
+  .rules li { padding-left: 4px; }
+  .rules b { display: block; }
+  .rules p { margin: 2px 0 0; color: var(--ink-2); font-size: 14px; }
+  .scan-row { display: grid; grid-template-columns: minmax(0, 1fr) 64px 84px; gap: 6px; align-items: end; padding: 10px 0; border-top: 1px solid var(--rule); }
+  .scan-row .f.full { grid-column: 1 / -1; }
+  .scan-row input, .scan-row select { padding: 7px 9px; }
+  .spinner { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--surface-2); border-top-color: var(--accent); animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+
+  .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(86px + env(safe-area-inset-bottom, 0px)); z-index: 30;
+    background: var(--ink); color: var(--bg); border-radius: 12px; padding: 10px 14px; font-size: 14px; max-width: min(92vw, 520px); box-shadow: var(--shadow); }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><h1>Die Speis<span>.</span></h1><span class="sync" id="sync">lädt</span></div>
+    <button class="month-pill" data-act="tab" data-v="ausgaben" id="month-pill" aria-label="Ausgaben diesen Monat">–</button>
+    <button class="icon-btn" data-act="rules" aria-label="So spart die Speis"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.3 2.4c-.6.2-.9.8-.9 1.4v.6"/><path d="M12 17h.01"/></svg></button>
+    <button class="icon-btn" data-act="settings" aria-label="Einstellungen"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+  </div>
+</header>
+
+<main class="wrap" id="view" aria-live="polite"></main>
+
+<nav class="tabs" aria-label="Bereiche">
+  <div class="in">
+    <button class="tab" data-act="tab" data-v="vorrat"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 10h16M4 15h16M9 7h6"/></svg>Vorrat</button>
+    <button class="tab" data-act="tab" data-v="einkauf"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>Einkauf<span class="badge" id="badge-einkauf" hidden></span></button>
+    <button class="tab" data-act="tab" data-v="preise"><svg viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8L3 12z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg>Preise</button>
+    <button class="tab" data-act="tab" data-v="ausgaben"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Ausgaben</button>
+  </div>
+</nav>
+
+<div class="sheet" id="sheet" hidden><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<input type="file" id="scan-file" accept="image/*" hidden>
+<datalist id="units"><option>Pkg</option><option>Stk</option><option>Dose</option><option>Glas</option><option>Fl.</option><option>Becher</option><option>Netz</option><option>Rolle</option><option>Sack</option></datalist>
+
+<script>
+"use strict";
+
+const AKTION_DAYS = 14;
+const CATS = ["Grundnahrung", "Konserven", "Frühstück", "Milch & Eier", "Fleisch & Fisch", "Obst & Gemüse", "Tiefkühl", "Öl & Gewürze", "Kaffee & Tee", "Getränke", "Snacks", "Drogerie", "Haushalt", "Sonstiges"];
+const DEFAULTS = {
+  budget: null,
+  stores: ["Hofer", "Lidl", "Penny", "Billa", "Billa Plus", "Spar", "Eurospar", "Interspar", "dm", "Bipa", "Metro online", "Markt"],
+  locs: ["Speis", "Kühlschrank", "Tiefkühler", "Bad", "Putzkasten"],
+  extras: [],
+};
+const MON = ["Jän", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+const MON_LONG = ["Jänner", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+const TABS = ["vorrat", "einkauf", "preise", "ausgaben"];
+
+const $ = (s) => document.querySelector(s);
+const view = $("#view");
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const r2 = (n) => Math.round(n * 100) / 100;
+const num = (v) => { const n = parseFloat(String(v ?? "").trim().replace(/\s/g, "").replace(",", ".")); return Number.isFinite(n) ? n : null; };
+const EUR = new Intl.NumberFormat("de-AT", { style: "currency", currency: "EUR" });
+const eur = (n) => EUR.format(n || 0);
+const NF = new Intl.NumberFormat("de-AT", { maximumFractionDigits: 2 });
+const dec = (n) => (n == null || n === "" ? "" : String(n).replace(".", ","));
+const uid = () => "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+function today() { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+const monthKey = (d) => String(d).slice(0, 7);
+const daysSince = (d) => Math.floor((Date.parse(today()) - Date.parse(d)) / 864e5);
+function addMonths(mk, n) { let [y, m] = mk.split("-").map(Number); m += n; while (m < 1) { m += 12; y--; } while (m > 12) { m -= 12; y++; } return y + "-" + String(m).padStart(2, "0"); }
+const monthName = (mk) => MON_LONG[+mk.slice(5, 7) - 1] + " " + mk.slice(0, 4);
+const daysInMonth = (mk) => new Date(+mk.slice(0, 4), +mk.slice(5, 7), 0).getDate();
+const fmtDay = (d) => +d.slice(8, 10) + ". " + MON[+d.slice(5, 7) - 1];
+
+function storeGet(k) { try { return localStorage.getItem(k); } catch { return null; } }
+function storeSet(k, v) { try { localStorage.setItem(k, v); } catch {} }
+
+const S = {
+  mode: "loading",
+  products: new Map(),
+  months: new Map(),
+  settings: normSettings({}),
+  tab: TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : (TABS.includes(storeGet("speis-tab")) ? storeGet("speis-tab") : "vorrat"),
+  loc: "Alle",
+  q: "",
+  extraDraft: "",
+  month: monthKey(today()),
+  readOnly: false,
+  scan: null,
+};
+
+function normSettings(d) {
+  const s = { ...DEFAULTS, ...d };
+  if (!Array.isArray(s.stores) || !s.stores.length) s.stores = DEFAULTS.stores;
+  if (!Array.isArray(s.locs) || !s.locs.length) s.locs = DEFAULTS.locs;
+  if (!Array.isArray(s.extras)) s.extras = [];
+  return s;
+}
+
+/* ---------- Preislogik ---------- */
+const gp = (o) => o.p / (o.a || 1); // Grundpreis je kg / l / Stk
+const unitCost = (p, o) => gp(o) * (+p.size > 0 ? +p.size : o.a);
+
+function analyze(p) {
+  const obs = (p.prices || []).filter((o) => o && o.p > 0 && o.a > 0).slice().sort((a, b) => String(b.d).localeCompare(String(a.d)));
+  const cur = new Map(), reg = new Map();
+  for (const o of obs) {
+    if (!o.k && !reg.has(o.s)) reg.set(o.s, o);
+    if (o.k && daysSince(o.d) > AKTION_DAYS) continue; // abgelaufene Aktion
+    if (!cur.has(o.s)) cur.set(o.s, o);
+  }
+  const offers = [...cur.values()].sort((a, b) => gp(a) - gp(b));
+  const best = offers[0] || null;
+  const low = obs.length ? Math.min(...obs.map(gp)) : null;
+  const regs = [...reg.values()];
+  const avg = regs.length ? regs.reduce((s, o) => s + gp(o), 0) / regs.length : null;
+  const auto = !(p.target > 0);
+  const target = !auto ? p.target : (obs.length >= 3 ? low * 1.05 : null);
+  const cheap = !!best && target != null && gp(best) <= target + 1e-9;
+  return { obs, offers, best, low, avg, target, auto, cheap };
+}
+
+function plan(p) {
+  const a = analyze(p);
+  const qty = +p.qty || 0, min = +p.min || 0;
+  const max = Math.max(+p.max || 0, min + 1);
+  const need = (min > 0 && qty <= min) || !!p.list;
+  let buy = 0, why = "";
+  if (need) {
+    if (a.cheap) { buy = max - qty; why = a.best.k ? "Aktion – gleich auf Vorrat" : "Bestpreis – auf Vorrat"; }
+    else if (a.best) { buy = min + 1 - qty; why = "Nur das Nötigste, Aktion abwarten"; }
+    else { buy = min + 1 - qty; why = "Noch kein Preis erfasst"; }
+    buy = Math.max(1, Math.ceil(buy));
+  } else if (a.cheap && a.best && a.best.k && qty < max) {
+    buy = Math.ceil(max - qty); why = "Aktion – Vorrat auffüllen";
+  }
+  return { a, need, buy, why, chance: !need && buy > 0 };
+}
+
+function status(p) {
+  const qty = +p.qty || 0, min = +p.min || 0;
+  if (qty <= 0) return ["leer", "bad"];
+  if (min > 0 && qty <= min) return ["knapp", "warn"];
+  return ["ok", "ok"];
+}
+function mhdState(p) {
+  if (!p.mhd) return null;
+  const d = -daysSince(p.mhd);
+  if (d < 0) return ["MHD abgelaufen", "bad"];
+  if (d <= 3) return [d === 0 ? "MHD heute" : "MHD in " + d + " T.", "warn"];
+  return null;
+}
+function fmtSize(p) {
+  const s = +p.size;
+  if (!(s > 0)) return "";
+  if (p.base === "kg") return s < 1 ? NF.format(s * 1000) + " g" : NF.format(s) + " kg";
+  if (p.base === "l") return s < 1 ? NF.format(s * 1000) + " ml" : NF.format(s) + " l";
+  return s === 1 ? "" : NF.format(s) + " Stk";
+}
+function tag(o, base) {
+  if (!o) return '<span class="tag none">kein Preis</span>';
+  return `<span class="tag${o.k ? " aktion" : ""}"><small>${o.k ? "Aktion · " : ""}1 ${esc(base || "Stk")}</small><b>${eur(gp(o))}</b></span>`;
+}
+const prods = () => [...S.products.entries()].map(([id, p]) => ({ ...p, id }));
+const byName = (a, b) => String(a.name).localeCompare(String(b.name), "de");
+const monthItems = (mk) => (S.months.get(mk)?.items || []);
+const monthSum = (mk) => monthItems(mk).reduce((s, i) => s + (+i.p || 0), 0);
+
+/* ---------- Speichern ---------- */
+let db = null, sample = null, canScan = false;
+const W = new Map();
+function isPending(path) { const w = W.get(path); return !!w && (w.timer != null || w.running); }
+function localData(path) {
+  const [col, id] = path.split("/");
+  if (col === "products") return S.products.get(id) || null;
+  if (col === "months") return S.months.get(id) || null;
+  if (col === "settings") return S.settings;
+  return null;
+}
+function persist(path, delay = 400) {
+  if (!db) return;
+  let w = W.get(path);
+  if (!w) W.set(path, (w = { timer: null, running: false, again: false }));
+  clearTimeout(w.timer);
+  w.timer = setTimeout(() => { w.timer = null; flush(path); }, delay);
+  setSync("saving");
+}
+async function flush(path) {
+  const w = W.get(path);
+  if (w.running) { w.again = true; return; }
+  w.running = true;
+  try {
+    const data = localData(path);
+    if (data) await db.doc(path).set(JSON.parse(JSON.stringify(data)));
+    else await db.doc(path).delete();
+    w.running = false;
+    if (w.again) { w.again = false; return flush(path); }
+    if (![...W.values()].some((x) => x.running || x.timer != null)) setSync("ok");
+  } catch (e) {
+    w.running = false; w.again = false;
+    writeFailed(e);
+  }
+}
+function writeFailed(e) {
+  setSync("err");
+  const code = e && e.code;
+  if (code === "invalid_argument") { S.readOnly = true; toast("Du kannst diese Speis nur ansehen. Änderungen werden nicht gespeichert."); }
+  else if (code === "quota_exceeded") toast("Der Speicher ist voll. Lösche alte Monate oder Produkte, dann klappt es wieder.");
+  else toast("Speichern hat nicht geklappt. Prüf die Verbindung und versuch es nochmal.");
+}
+function applyCol(map, col, snap) {
+  const next = new Map();
+  for (const d of snap.docs) {
+    const path = col + "/" + d.id;
+    if (isPending(path)) { if (map.has(d.id)) next.set(d.id, map.get(d.id)); }
+    else next.set(d.id, d.data());
+  }
+  for (const [id, v] of map) if (!next.has(id) && isPending(col + "/" + id)) next.set(id, v);
+  return next;
+}
+function putProduct(id, data) { S.products.set(id, data); render(); persist("products/" + id); }
+function delProduct(id) { S.products.delete(id); render(); persist("products/" + id, 0); }
+function putSettings(patch) { S.settings = normSettings({ ...S.settings, ...patch }); render(); persist("settings/main"); }
+function logSpend(entry) {
+  const mk = monthKey(entry.d);
+  const m = S.months.get(mk) || { m: mk, items: [] };
+  S.months.set(mk, { ...m, items: [...(m.items || []), { ...entry, id: uid() }] });
+  render(); persist("months/" + mk);
+}
+function delSpend(mk, eid) {
+  const m = S.months.get(mk); if (!m) return;
+  S.months.set(mk, { ...m, items: m.items.filter((i) => i.id !== eid) });
+  render(); persist("months/" + mk);
+}
+function applyPurchase({ id, q, s, total, k, d }) {
+  const p = S.products.get(id); if (!p) return;
+  q = q > 0 ? q : 1;
+  const a = analyze(p);
+  const size = +p.size > 0 ? +p.size : 1;
+  const prices = total > 0 ? [{ s, p: r2(total / q), a: size, d, k: !!k }, ...(p.prices || [])].slice(0, 40) : (p.prices || []);
+  const sv = total > 0 && a.avg ? Math.max(0, (a.avg - total / (q * size)) * q * size) : 0;
+  putProduct(id, { ...p, qty: r2((+p.qty || 0) + q), list: false, prices, t: Date.now() });
+  logSpend({ d, pid: id, n: p.name, s, q, p: r2(total || 0), c: p.cat || "Sonstiges", sv: r2(sv) });
+}
+
+/* ---------- Oberfläche ---------- */
+let rq = 0;
+function render() { if (rq) return; rq = requestAnimationFrame(() => { rq = 0; draw(); }); }
+function draw() {
+  const ae = document.activeElement;
+  const fid = ae && ae.id && view.contains(ae) ? ae.id : null;
+  let s0 = null, s1 = null;
+  if (fid) { try { s0 = ae.selectionStart; s1 = ae.selectionEnd; } catch {} }
+  const V = { vorrat: vVorrat, einkauf: vEinkauf, preise: vPreise, ausgaben: vAusgaben };
+  view.innerHTML = S.mode === "loading" ? vLoading() : V[S.tab]();
+  if (fid) { const el = document.getElementById(fid); if (el) { el.focus({ preventScroll: true }); if (s0 != null) { try { el.setSelectionRange(s0, s1); } catch {} } } }
+  drawChrome();
+}
+function drawChrome() {
+  document.querySelectorAll(".tab").forEach((b) => { if (b.dataset.v === S.tab) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+  const n = prods().filter((p) => plan(p).need).length + (S.settings.extras || []).length;
+  const bd = $("#badge-einkauf"); bd.hidden = !n; bd.textContent = n;
+  const mk = monthKey(today());
+  $("#month-pill").innerHTML = `${MON[+mk.slice(5) - 1]} <b>${eur(monthSum(mk))}</b>`;
+}
+let syncState = "loading";
+function setSync(s) {
+  syncState = s;
+  const el = $("#sync");
+  el.className = "sync " + s;
+  el.textContent = { loading: "lädt", ok: "gespeichert", saving: "speichert …", err: "nicht gespeichert", local: "nur lokal" }[s] || "";
+}
+
+function banners() {
+  let h = "";
+  if (S.mode === "local") h += `<div class="banner"><p><b>Nur in diesem Fenster.</b> Hier kann nichts dauerhaft gespeichert werden. Öffne die Speis angemeldet auf claude.ai, dann bleibt alles erhalten.</p></div>`;
+  if (S.readOnly) h += `<div class="banner"><p><b>Nur ansehen.</b> Du hast keine Schreibrechte für diese Speis.</p></div>`;
+  if (prods().some((p) => p.ex)) h += `<div class="banner info"><p><b>Das sind Beispiel-Einträge</b> mit erfundenen Preisen, damit du siehst, wie alles zusammenspielt. Leg deine eigenen Produkte an und entferne die Beispiele, wenn du so weit bist.</p><button class="btn small danger" data-act="clear-ex">Beispiele entfernen</button></div>`;
+  return h;
+}
+function vLoading() {
+  return `<div class="empty"><div class="spinner" aria-hidden="true"></div><h3>Die Speis wird geöffnet</h3><p>Gleich erscheinen hier dein Vorrat, die Einkaufsliste, deine Preise und die Ausgaben des Monats.</p></div>`;
+}
+
+function vVorrat() {
+  const all = prods();
+  if (!all.length) {
+    return banners() + `<div class="empty"><h3>Deine Speis ist noch leer</h3>
+      <p>Leg an, was du regelmäßig kaufst: Nudeln, Kaffee, Klopapier … Für jedes Produkt gibst du an, ab welchem Bestand nachgekauft wird und wie viel Vorrat bei einer Aktion sinnvoll ist.</p>
+      <p>Schneller geht es im Chat mit Claude: Schick eine Liste deiner Produkte oder ein Foto vom Kassenbon, dann wird alles eingetragen.</p>
+      <div><button class="btn primary" data-act="new">+ Erstes Produkt anlegen</button></div></div>`;
+  }
+  const leer = all.filter((p) => status(p)[0] === "leer").length;
+  const knapp = all.filter((p) => status(p)[0] === "knapp").length;
+  const mhd = all.filter((p) => mhdState(p)).length;
+  const known = S.settings.locs;
+  const locs = ["Alle", ...known.filter((l) => all.some((p) => p.loc === l)), ...[...new Set(all.map((p) => p.loc))].filter((l) => l && !known.includes(l))];
+  if (!locs.includes(S.loc)) S.loc = "Alle";
+  const q = S.q.trim().toLowerCase();
+  const list = all.filter((p) => (S.loc === "Alle" || p.loc === S.loc) && (!q || String(p.name).toLowerCase().includes(q) || String(p.cat).toLowerCase().includes(q)));
+  const groups = locs.filter((l) => l !== "Alle").map((l) => ({ l, items: list.filter((p) => p.loc === l).sort(byName) })).filter((g) => g.items.length);
+  return `${banners()}
+    <div class="status">
+      <span><b>${all.length}</b> Produkte</span>
+      ${leer ? `<span class="s-bad"><b>${leer}</b> leer</span>` : ""}
+      ${knapp ? `<span class="s-warn"><b>${knapp}</b> knapp</span>` : ""}
+      ${mhd ? `<span class="s-warn"><b>${mhd}</b> MHD prüfen</span>` : ""}
+    </div>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Suchen …" value="${esc(S.q)}" data-bind="q" aria-label="Vorrat durchsuchen" autocomplete="off">
+      <button class="btn primary" data-act="new">+ Produkt</button>
+    </div>
+    <div class="chips">${locs.map((l) => `<button class="chip${S.loc === l ? " on" : ""}" data-act="loc" data-v="${esc(l)}">${esc(l)}</button>`).join("")}</div>
+    ${groups.length ? groups.map((g) => `<section class="group"><h3 class="group-h">${esc(g.l)}<span>${g.items.length}</span></h3><ul class="rows">${g.items.map(rowVorrat).join("")}</ul></section>`).join("") : `<div class="empty-mini">Nichts gefunden.</div>`}`;
+}
+function rowVorrat(p) {
+  const [st, cls] = status(p), m = mhdState(p), size = fmtSize(p);
+  return `<li class="row">
+    <button class="row-main" data-act="edit" data-id="${p.id}">
+      <span class="row-name">${esc(p.name)}${p.ex ? '<i class="ex">Beispiel</i>' : ""}</span>
+      <span class="row-sub">${esc(p.cat)}${size ? " · " + size : ""}${m ? ` · <em class="t-${m[1]}">${m[0]}</em>` : ""}</span>
+    </button>
+    <span class="pill ${st === "ok" ? "none" : cls}">${st}</span>
+    <div class="stepper${(+p.qty || 0) <= 0 ? " zero" : ""}">
+      <button data-act="dec" data-id="${p.id}" aria-label="${esc(p.name)}: eins weniger">−</button>
+      <span class="qty"><b>${NF.format(+p.qty || 0)}</b><small>${esc(p.unit || "Stk")}</small></span>
+      <button data-act="inc" data-id="${p.id}" aria-label="${esc(p.name)}: eins mehr">+</button>
+    </div>
+  </li>`;
+}
+
+function vEinkauf() {
+  const P = prods().map((p) => ({ ...p, pl: plan(p) }));
+  const need = P.filter((x) => x.pl.need), chance = P.filter((x) => x.pl.chance);
+  const cost = (x) => (x.pl.a.best ? unitCost(x, x.pl.a.best) * x.pl.buy : 0);
+  const est = [...need, ...chance].reduce((s, x) => s + cost(x), 0);
+  const gmap = new Map();
+  for (const x of need) { const k = x.pl.a.best ? x.pl.a.best.s : "Noch ohne Preis"; if (!gmap.has(k)) gmap.set(k, []); gmap.get(k).push(x); }
+  const groups = [...gmap].map(([s, items]) => ({ s, items: items.sort(byName), sum: items.reduce((t, x) => t + cost(x), 0) }))
+    .sort((a, b) => (a.s === "Noch ohne Preis") - (b.s === "Noch ohne Preis") || b.items.length - a.items.length);
+  const extras = S.settings.extras || [];
+  return `${banners()}
+    <section class="lead">
+      <h2>Einkaufsliste</h2>
+      <p>${need.length ? `<b>${need.length}</b> nachkaufen` : "Nichts nachzukaufen"}${chance.length ? ` · <b>${chance.length}</b> Aktions-Chance${chance.length > 1 ? "n" : ""}` : ""} · geschätzt <b class="num">${eur(est)}</b></p>
+      <p class="small muted">Sortiert nach dem Markt mit dem besten Grundpreis. Ohne Aktion kauft die Liste nur das Nötigste; bei einem guten Preis füllt sie den Vorrat auf.</p>
+      ${canScan ? `<div class="actions"><button class="btn" data-act="scan">Kassenbon scannen</button></div>` : ""}
+    </section>
+    ${groups.map((g) => `<section class="group"><h3 class="group-h">${esc(g.s)}<span>${g.items.length} · ${eur(g.sum)}</span></h3><ul class="rows">${g.items.map(rowShop).join("")}</ul></section>`).join("")}
+    ${chance.length ? `<section class="group"><h3 class="group-h">Gerade günstig – auf Vorrat legen<span>${chance.length}</span></h3><ul class="rows">${chance.sort(byName).map(rowShop).join("")}</ul></section>` : ""}
+    <section class="group"><h3 class="group-h">Sonst noch<span>${extras.length || ""}</span></h3>
+      ${extras.length ? `<ul class="rows">${extras.map((e) => `<li class="row two"><span class="row-main"><span class="row-name">${esc(e.t)}</span></span><button class="btn small" data-act="extra-done" data-id="${esc(e.id)}">Erledigt</button></li>`).join("")}</ul>` : ""}
+      <form class="inline-add" data-form="extra"><input id="extra" data-bind="extraDraft" value="${esc(S.extraDraft)}" placeholder="z. B. Batterien, Geburtstagskuchen" aria-label="Etwas auf die Liste schreiben" autocomplete="off"><button class="btn">Dazu</button></form>
+    </section>`;
+}
+function rowShop(x) {
+  const o = x.pl.a.best;
+  const alt = x.pl.a.offers[1];
+  return `<li class="row">
+    <button class="row-main" data-act="prices" data-id="${x.id}">
+      <span class="row-name">${esc(x.name)} <span class="mult">× ${NF.format(x.pl.buy)} ${esc(x.unit || "Stk")}</span>${x.ex ? '<i class="ex">Beispiel</i>' : ""}</span>
+      <span class="row-sub">${esc(x.pl.why)}${o ? " · " + eur(unitCost(x, o)) + " je " + esc(x.unit || "Stk") : ""}${alt ? ` · ${esc(alt.s)} ${eur(gp(alt))}` : ""}</span>
+    </button>
+    ${tag(o, x.base)}
+    <button class="btn primary small" data-act="buy" data-id="${x.id}">Gekauft</button>
+  </li>`;
+}
+
+function vPreise() {
+  const all = prods().sort(byName);
+  if (!all.length) return banners() + `<div class="empty"><h3>Noch keine Preise</h3><p>Lege zuerst im Vorrat deine Produkte an. Danach merkt sich die Speis jeden Preis, den du beim Einkauf oder aus dem Flugblatt einträgst.</p></div>`;
+  const rank = new Map();
+  for (const p of all) { const b = analyze(p).best; if (b) rank.set(b.s, (rank.get(b.s) || 0) + 1); }
+  const rk = [...rank].sort((a, b) => b[1] - a[1]);
+  return `${banners()}
+    <section class="lead">
+      <h2>Preisgedächtnis</h2>
+      <p>Grundpreise aus deinen Einkäufen und Flugblättern. Eine Aktion zählt ${AKTION_DAYS} Tage, danach gilt wieder der Normalpreis.</p>
+      <div class="actions"><button class="btn primary" data-act="price-new">+ Preis erfassen</button></div>
+    </section>
+    ${rk.length ? `<section class="card"><h3 class="card-h">Wo du gerade am günstigsten kaufst</h3>
+      <ul class="bars">${rk.map(([s, n]) => `<li><span>${esc(s)}</span><span class="bar"><i style="width:${(n / rk[0][1]) * 100}%"></i></span><b>${n}</b></li>`).join("")}</ul>
+      <p class="hint">Anzahl deiner Produkte, für die dieser Markt den besten aktuellen Grundpreis hat.</p></section>` : ""}
+    <ul class="rows">${all.map(rowPrice).join("")}</ul>`;
+}
+function rowPrice(p) {
+  const a = analyze(p);
+  const sub = a.best
+    ? `${esc(a.best.s)} · Bestpreis bisher ${eur(a.low)}/${esc(p.base)}${a.target != null ? ` · Ziel ${eur(a.target)}${a.auto ? " (auto)" : ""}` : ""}`
+    : "Noch kein Preis erfasst";
+  return `<li class="row">
+    <button class="row-main" data-act="prices" data-id="${p.id}">
+      <span class="row-name">${esc(p.name)}${p.ex ? '<i class="ex">Beispiel</i>' : ""}</span>
+      <span class="row-sub">${sub}</span>
+    </button>
+    <span class="pill ${a.cheap ? "ok" : "none"}">günstig</span>
+    ${tag(a.best, p.base)}
+  </li>`;
+}
+
+function vAusgaben() {
+  const mk = S.month, isCur = mk === monthKey(today());
+  const items = monthItems(mk).slice().sort((a, b) => String(b.d).localeCompare(String(a.d)));
+  const total = items.reduce((s, i) => s + (+i.p || 0), 0);
+  const saved = items.reduce((s, i) => s + (+i.sv || 0), 0);
+  const B = +S.settings.budget || 0;
+  const day = +today().slice(8, 10), dim = daysInMonth(mk);
+  const proj = isCur && total > 0 ? (total / day) * dim : null;
+  const ratio = B ? total / B : 0;
+  const by = (key) => { const m = new Map(); for (const i of items) { const k = i[key] || "Sonstiges"; m.set(k, (m.get(k) || 0) + (+i.p || 0)); } return [...m].sort((a, b) => b[1] - a[1]); };
+  const bars = (arr) => { const mx = arr.length ? arr[0][1] || 1 : 1; return `<ul class="bars">${arr.map(([k, v]) => `<li><span>${esc(k)}</span><span class="bar"><i style="width:${(v / mx) * 100}%"></i></span><b>${eur(v)}</b></li>`).join("")}</ul>`; };
+  const stores = by("s"), cats = by("c");
+  return `${banners()}
+    <div class="month-nav">
+      <h2>${monthName(mk)}</h2>
+      <button class="icon-btn" data-act="month" data-v="-1" aria-label="Vormonat"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <button class="icon-btn" data-act="month" data-v="1" aria-label="Nächster Monat" ${isCur ? "disabled" : ""}><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <section class="card">
+      <div class="big"><span class="v">${eur(total)}</span>${B ? `<span class="of">von ${eur(B)} Budget</span>` : `<button class="btn small" data-act="settings">Monatsbudget festlegen</button>`}</div>
+      ${B ? `<div class="meter ${ratio > 1 ? "bad" : ratio > 0.85 ? "warn" : ""}"><i style="width:${Math.min(100, ratio * 100)}%"></i></div>` : ""}
+      <div class="kv">
+        ${B ? `<div><span>${total <= B ? "Noch übrig" : "Über Budget"}</span><b>${eur(Math.abs(B - total))}</b></div>` : ""}
+        ${proj != null ? `<div><span>Hochrechnung Monatsende</span><b>${eur(proj)}</b></div>` : ""}
+        <div><span>Geschätzt gespart</span><b class="${saved > 0 ? "good" : ""}">${eur(saved)}</b></div>
+        <div><span>Einkäufe erfasst</span><b>${items.length}</b></div>
+      </div>
+      <p class="hint">„Gespart“ vergleicht deinen bezahlten Grundpreis mit dem durchschnittlichen Normalpreis aller Märkte, die du für das Produkt erfasst hast.</p>
+      <div class="actions" style="display:flex;flex-wrap:wrap;gap:8px">
+        <button class="btn primary" data-act="spend-new">+ Einkauf erfassen</button>
+        ${canScan ? `<button class="btn" data-act="scan">Kassenbon scannen</button>` : ""}
+      </div>
+    </section>
+    <section class="card"><h3 class="card-h">Letzte sechs Monate</h3>${chart6(mk)}</section>
+    ${stores.length ? `<section class="card"><h3 class="card-h">Nach Markt</h3>${bars(stores)}</section>` : ""}
+    ${cats.length ? `<section class="card"><h3 class="card-h">Nach Kategorie</h3>${bars(cats)}</section>` : ""}
+    <section class="group"><h3 class="group-h">Einkäufe<span>${items.length}</span></h3>
+      ${items.length ? `<ul class="rows">${items.map((i) => `<li class="row">
+        <span class="row-main"><span class="row-name">${esc(i.n || "Einkauf")}${i.q > 1 ? ` <span class="mult">× ${NF.format(i.q)}</span>` : ""}${i.ex ? '<i class="ex">Beispiel</i>' : ""}</span>
+        <span class="row-sub">${fmtDay(i.d)} · ${esc(i.s || "")}${i.sv > 0 ? ` · ${eur(i.sv)} gespart` : ""}</span></span>
+        <b class="num">${eur(i.p)}</b>
+        <button class="x" data-act="spend-del" data-m="${mk}" data-id="${esc(i.id)}" aria-label="Eintrag löschen">×</button></li>`).join("")}</ul>`
+        : `<div class="empty-mini">In diesem Monat ist noch nichts erfasst. Tipp auf „Gekauft“ in der Einkaufsliste, scanne einen Kassenbon oder trag nur die Summe ein.</div>`}
+    </section>`;
+}
+function chart6(mk) {
+  const keys = []; for (let i = 5; i >= 0; i--) keys.push(addMonths(mk, -i));
+  const vals = keys.map(monthSum);
+  const B = +S.settings.budget || 0;
+  const max = Math.max(...vals, B, 1) * 1.18;
+  const Wd = 600, H = 210, pt = 24, pb = 28, ih = H - pt - pb, cw = Wd / 6, bw = cw * 0.56;
+  const y = (v) => pt + ih - (v / max) * ih;
+  let s = `<svg class="chart" viewBox="0 0 ${Wd} ${H}" role="img" aria-label="Ausgaben der letzten sechs Monate">`;
+  s += `<line x1="0" x2="${Wd}" y1="${pt + ih}" y2="${pt + ih}" stroke="var(--rule)" stroke-width="1"/>`;
+  vals.forEach((v, i) => {
+    const x = cw * i + (cw - bw) / 2, on = keys[i] === mk;
+    if (v > 0) s += `<rect x="${x}" y="${y(v)}" width="${bw}" height="${pt + ih - y(v)}" rx="5" fill="var(--accent)" fill-opacity="${on ? 1 : 0.35}"/>`;
+    s += `<text class="val" x="${x + bw / 2}" y="${(v > 0 ? y(v) : pt + ih) - 7}" text-anchor="middle">${v > 0 ? NF.format(Math.round(v)) : "–"}</text>`;
+    s += `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle"${on ? ' style="fill:var(--ink);font-weight:600"' : ""}>${MON[+keys[i].slice(5) - 1]}</text>`;
+  });
+  if (B) s += `<line x1="0" x2="${Wd}" y1="${y(B)}" y2="${y(B)}" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="6 5"/><text x="${Wd - 4}" y="${y(B) - 6}" text-anchor="end" style="fill:var(--bad)">Budget ${NF.format(B)} €</text>`;
+  return s + "</svg>";
+}
+
+/* ---------- Sheets ---------- */
+const sheet = $("#sheet"), panel = $("#panel");
+let lastFocus = null;
+function openSheet(html) {
+  if (sheet.hidden) lastFocus = document.activeElement;
+  panel.innerHTML = html; sheet.hidden = false; panel.scrollTop = 0;
+  const f = panel.querySelector("input:not([type=checkbox]):not([type=hidden]), select, textarea, button");
+  if (f && window.matchMedia("(min-width: 720px)").matches) f.focus(); else panel.focus?.();
+}
+function closeSheet() {
+  sheet.hidden = true; panel.innerHTML = "";
+  if (scanCtl) { scanCtl.abort(); scanCtl = null; }
+  try { lastFocus?.focus({ preventScroll: true }); } catch {}
+}
+const opts = (arr, v) => arr.map((o) => `<option${o === v ? " selected" : ""}>${esc(o)}</option>`).join("");
+const storeOpts = (v) => opts(S.settings.stores.includes(v) || !v ? S.settings.stores : [v, ...S.settings.stores], v);
+
+function newProduct() {
+  return { name: "", cat: "Grundnahrung", loc: S.settings.locs[0] || "Speis", unit: "Pkg", size: 1, base: "Stk", qty: 1, min: 1, max: 3, target: null, prices: [], mhd: "", list: false, note: "" };
+}
+function sheetEdit(id) {
+  const p = (id && S.products.get(id)) || newProduct();
+  openSheet(`<form class="form" data-form="edit" data-id="${esc(id || "")}">
+    <h2>${id ? "Produkt bearbeiten" : "Neues Produkt"}</h2>
+    <label class="f"><span>Name</span><input id="f-name" name="name" required value="${esc(p.name)}" placeholder="z. B. Spaghetti" autocomplete="off"></label>
+    <div class="grid2">
+      <label class="f"><span>Kategorie</span><select id="f-cat" name="cat">${opts(CATS.includes(p.cat) ? CATS : [p.cat, ...CATS], p.cat)}</select></label>
+      <label class="f"><span>Lagerort</span><select id="f-loc" name="loc">${opts(S.settings.locs.includes(p.loc) ? S.settings.locs : [p.loc, ...S.settings.locs], p.loc)}</select></label>
+    </div>
+    <fieldset class="fs"><legend>Packung</legend>
+      <div class="grid3">
+        <label class="f"><span>Zähleinheit</span><input id="f-unit" name="unit" list="units" value="${esc(p.unit)}"></label>
+        <label class="f"><span>Inhalt je Einheit</span><input id="f-size" name="size" inputmode="decimal" value="${esc(dec(p.size))}"></label>
+        <label class="f"><span>gemessen in</span><select id="f-base" name="base">${opts(["kg", "l", "Stk"], p.base)}</select></label>
+      </div>
+      <p class="hint">Beispiel: 1 Pkg mit 0,5 kg. Daraus rechnet die Speis den Grundpreis je kg, damit Packungsgrößen vergleichbar werden.</p>
+    </fieldset>
+    <fieldset class="fs"><legend>Vorrat</legend>
+      <div class="grid3">
+        <label class="f"><span>Bestand jetzt</span><input id="f-qty" name="qty" inputmode="decimal" value="${esc(dec(p.qty ?? 0))}"></label>
+        <label class="f"><span>Nachkaufen bei</span><input id="f-min" name="min" inputmode="decimal" value="${esc(dec(p.min ?? 0))}"></label>
+        <label class="f"><span>Vorrat höchstens</span><input id="f-max" name="max" inputmode="decimal" value="${esc(dec(p.max ?? 0))}"></label>
+      </div>
+      <p class="hint">Fällt der Bestand auf „Nachkaufen bei“, kommt das Produkt auf die Liste. Bei einem guten Preis wird bis „Vorrat höchstens“ aufgefüllt: so viel, wie du vor Ablauf verbrauchst und unterbringst.</p>
+    </fieldset>
+    <div class="grid2">
+      <label class="f"><span>Zielpreis in € je kg / l / Stk</span><input id="f-target" name="target" inputmode="decimal" value="${esc(dec(p.target))}" placeholder="automatisch"></label>
+      <label class="f"><span>MHD (frühestes)</span><input id="f-mhd" name="mhd" type="date" value="${esc(p.mhd || "")}"></label>
+    </div>
+    <p class="hint">Liegt ein Preis auf oder unter dem Zielpreis, gilt er als günstig. Leer lassen: Ab drei erfassten Preisen nimmt die Speis den Bestpreis plus 5 %.</p>
+    <label class="check"><input id="f-list" type="checkbox" name="list"${p.list ? " checked" : ""}> Auf jeden Fall auf die nächste Einkaufsliste</label>
+    <label class="f"><span>Notiz</span><input id="f-note" name="note" value="${esc(p.note || "")}" placeholder="z. B. nur Vollkorn" autocomplete="off"></label>
+    <div class="sheet-actions">
+      ${id ? `<button type="button" class="btn danger" data-act="del" data-id="${esc(id)}">Löschen</button>` : ""}
+      <span class="grow"></span>
+      <button type="button" class="btn" data-act="close">Abbrechen</button>
+      <button class="btn primary">Speichern</button>
+    </div>
+  </form>`);
+}
+function sheetBuy(id) {
+  const p = S.products.get(id); if (!p) return;
+  const pl = plan(p), o = pl.a.best, q = pl.buy || 1;
+  const uc = o ? unitCost(p, o) : null;
+  openSheet(`<form class="form" data-form="buy" data-id="${esc(id)}" data-uc="${uc ?? ""}">
+    <h2>${esc(p.name)} gekauft</h2>
+    <p class="muted small" style="margin:0">Der Bestand steigt, der Preis wird gemerkt und die Ausgabe im Monat verbucht.</p>
+    <div class="grid3">
+      <label class="f"><span>Menge (${esc(p.unit || "Stk")})</span><input id="b-q" name="q" inputmode="decimal" value="${esc(dec(q))}"></label>
+      <label class="f"><span>Markt</span><select id="b-s" name="s">${storeOpts(o ? o.s : S.settings.stores[0])}</select></label>
+      <label class="f"><span>Bezahlt gesamt (€)</span><input id="b-p" name="p" inputmode="decimal" value="${uc ? esc(dec((uc * q).toFixed(2))) : ""}" placeholder="0,00"></label>
+    </div>
+    <label class="check"><input id="b-k" type="checkbox" name="k"${o && o.k ? " checked" : ""}> Aktions- oder Pickerlpreis</label>
+    <div class="sheet-actions"><span class="grow"></span><button type="button" class="btn" data-act="close">Abbrechen</button><button class="btn primary">Verbuchen</button></div>
+  </form>`);
+}
+function sheetPrices(id) {
+  const p = S.products.get(id); if (!p) return;
+  const a = analyze(p);
+  const rows = (p.prices || []).map((o, i) => ({ o, i })).sort((x, y) => String(y.o.d).localeCompare(String(x.o.d)));
+  const amount = (o) => fmtSize({ size: o.a, base: p.base }) || NF.format(o.a) + " " + p.base;
+  openSheet(`<div class="form">
+    <h2>${esc(p.name)}</h2>
+    <div class="kv">
+      <div><span>Jetzt am günstigsten</span><b>${a.best ? `${esc(a.best.s)} ${eur(gp(a.best))}` : "–"}</b></div>
+      <div><span>Bestpreis bisher</span><b>${a.low != null ? eur(a.low) : "–"}</b></div>
+      <div><span>Ø Normalpreis</span><b>${a.avg != null ? eur(a.avg) : "–"}</b></div>
+      <div><span>Zielpreis${a.auto ? " (auto)" : ""}</span><b>${a.target != null ? eur(a.target) : "–"}</b></div>
+    </div>
+    <p class="hint">Alle Preise je ${esc(p.base)}. ${p.size ? "Standardpackung: " + (fmtSize(p) || "1 Stk") + "." : ""}</p>
+    ${rows.length ? `<div class="table-wrap"><table class="tbl"><thead><tr><th>Datum</th><th>Markt</th><th class="r">Preis</th><th class="r">Inhalt</th><th class="r">je ${esc(p.base)}</th><th></th></tr></thead><tbody>
+      ${rows.map(({ o, i }) => `<tr class="${o.k ? "akt" : ""}"><td>${esc(fmtDay(String(o.d)))}${o.k ? " · Aktion" : ""}</td><td>${esc(o.s)}</td><td class="r">${eur(o.p)}</td><td class="r">${esc(amount(o))}</td><td class="r">${eur(gp(o))}</td><td><button class="x" data-act="obs-del" data-id="${esc(id)}" data-i="${i}" aria-label="Preis löschen">×</button></td></tr>`).join("")}
+    </tbody></table></div>` : `<p class="muted">Noch kein Preis erfasst.</p>`}
+    ${priceForm(id, p)}
+    <div class="sheet-actions"><button type="button" class="btn" data-act="edit" data-id="${esc(id)}">Produkt bearbeiten</button><span class="grow"></span><button type="button" class="btn" data-act="close">Fertig</button></div>
+  </div>`);
+}
+function priceForm(id, p) {
+  return `<form class="fs form" data-form="price" data-id="${esc(id || "")}"><legend>Preis erfassen</legend>
+    ${id ? "" : `<label class="f"><span>Produkt</span><select id="pf-pid" name="pid">${prods().sort(byName).map((x) => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join("")}</select></label>`}
+    <div class="grid3">
+      <label class="f"><span>Markt</span><select id="pf-s" name="s">${storeOpts(S.settings.stores[0])}</select></label>
+      <label class="f"><span>Preis (€)</span><input id="pf-p" name="p" inputmode="decimal" placeholder="0,00" required></label>
+      <label class="f"><span>Inhalt${p ? " in " + esc(p.base) : ""}</span><input id="pf-a" name="a" inputmode="decimal" placeholder="${p && p.size ? esc(dec(p.size)) + " (Standard)" : "Standardpackung"}"></label>
+    </div>
+    <div class="grid2">
+      <label class="f"><span>Datum</span><input id="pf-d" name="d" type="date" value="${today()}"></label>
+      <label class="check" style="align-self:end;padding-bottom:8px"><input id="pf-k" type="checkbox" name="k"> Aktion / Pickerl</label>
+    </div>
+    <div class="sheet-actions"><span class="grow"></span><button class="btn primary">Preis speichern</button></div>
+  </form>`;
+}
+function sheetPriceNew() {
+  if (!S.products.size) return toast("Lege zuerst ein Produkt an.");
+  openSheet(`<div class="form"><h2>Preis erfassen</h2><p class="hint">Aus dem Flugblatt, der App oder vom Regal. Den Grundpreis rechnet die Speis selbst.</p>${priceForm(null, null)}<div class="sheet-actions"><span class="grow"></span><button type="button" class="btn" data-act="close">Schließen</button></div></div>`);
+}
+function sheetSpend() {
+  openSheet(`<form class="form" data-form="spend">
+    <h2>Einkauf erfassen</h2>
+    <p class="hint">Für den schnellen Überblick reicht die Summe vom Kassenbon.</p>
+    <div class="grid3">
+      <label class="f"><span>Datum</span><input id="sp-d" name="d" type="date" value="${today()}"></label>
+      <label class="f"><span>Markt</span><select id="sp-s" name="s">${storeOpts(S.settings.stores[0])}</select></label>
+      <label class="f"><span>Betrag (€)</span><input id="sp-p" name="p" inputmode="decimal" placeholder="0,00" required></label>
+    </div>
+    <div class="grid2">
+      <label class="f"><span>Notiz</span><input id="sp-n" name="n" placeholder="Wocheneinkauf" autocomplete="off"></label>
+      <label class="f"><span>Kategorie</span><select id="sp-c" name="c">${opts(["Gemischt", ...CATS], "Gemischt")}</select></label>
+    </div>
+    <div class="sheet-actions"><span class="grow"></span><button type="button" class="btn" data-act="close">Abbrechen</button><button class="btn primary">Verbuchen</button></div>
+  </form>`);
+}
+function sheetSettings() {
+  const s = S.settings;
+  openSheet(`<form class="form" data-form="settings">
+    <h2>Einstellungen</h2>
+    <label class="f"><span>Monatsbudget für Lebensmittel und Haushalt (€)</span><input id="st-b" name="budget" inputmode="decimal" value="${esc(dec(s.budget))}" placeholder="z. B. 350"></label>
+    <div class="grid2">
+      <label class="f"><span>Märkte, einer pro Zeile</span><textarea id="st-s" name="stores">${esc(s.stores.join("\n"))}</textarea></label>
+      <label class="f"><span>Lagerorte, einer pro Zeile</span><textarea id="st-l" name="locs">${esc(s.locs.join("\n"))}</textarea></label>
+    </div>
+    <div class="sheet-actions"><span class="grow"></span><button type="button" class="btn" data-act="close">Abbrechen</button><button class="btn primary">Speichern</button></div>
+    <fieldset class="fs"><legend>Daten</legend>
+      <p class="hint">Alles liegt in dieser Speis und ist auch für Claude lesbar. Bitte Claude im Chat, Produkte nachzutragen oder dir eine Auswertung zu machen.</p>
+      <div class="sheet-actions">
+        <button type="button" class="btn" data-act="copy-json">Sicherung kopieren</button>
+        ${prods().some((p) => p.ex) ? `<button type="button" class="btn danger" data-act="clear-ex">Beispiele entfernen</button>` : ""}
+      </div>
+      <textarea id="json-out" class="mono" hidden readonly style="width:100%;min-height:120px;font-size:12px"></textarea>
+    </fieldset>
+  </form>`);
+}
+function sheetRules() {
+  openSheet(`<div class="form">
+    <h2>So spart die Speis</h2>
+    <ol class="rules">
+      <li><b>Der Vorrat ist dein Puffer.</b><p>Weil immer ein, zwei Packungen daheim sind, musst du nie zum vollen Preis kaufen. Ohne Aktion kauft die Liste deshalb nur das Nötigste und wartet auf den nächsten guten Preis.</p></li>
+      <li><b>Immer den Grundpreis vergleichen.</b><p>Der Preis je kg oder Liter steht auf jedem Regaletikett. Die Großpackung ist nicht automatisch billiger, die Speis rechnet es für dich nach.</p></li>
+      <li><b>Bei gutem Preis auf Vorrat, aber mit Obergrenze.</b><p>Haltbares in Menge: Nudeln, Reis, Konserven, Kaffee, Öl, Tiefkühlware, Drogerie. Frisches nur nach Bedarf. Die Obergrenze richtet sich nach Haltbarkeit und Platz, sonst wird Sparen zu Wegwerfen.</p></li>
+      <li><b>Diskonter als Basis.</b><p>Laut AK-Preismonitor vom März 2026 waren Supermärkte beim günstigsten Warenkorb im Schnitt rund 10 % teurer als Diskonter. Eigenmarken zuerst, Markenware nur in der Aktion.</p></li>
+      <li><b>Pickerl gezielt kleben.</b><p>Rabattpickerl von Billa und Spar bringen am meisten auf teure Vorratsartikel wie Kaffee, Olivenöl oder Waschmittel. Dazu die Apps (Lidl Plus, jö, Spar) und ein Flugblatt-Sammler wie Aktionsfinder, Marktguru oder wogibtswas.at.</p></li>
+      <li><b>Großhandel nüchtern rechnen.</b><p>In den Metro-Großmarkt kommst du nur mit Gewerbe oder Verein. Der Metro-Onlineshop ist auch für Private offen. Er lohnt sich nur bei großen Mengen haltbarer Ware, Lieferkosten mitgerechnet.</p></li>
+      <li><b>Jeden Einkauf erfassen.</b><p>Kassenbon scannen oder nur die Summe eintragen. Nach zwei, drei Monaten siehst du, wo das Geld wirklich hingeht und ob das Budget passt.</p></li>
+    </ol>
+    <div class="sheet-actions"><span class="grow"></span><button type="button" class="btn primary" data-act="close">Verstanden</button></div>
+  </div>`);
+}
+
+/* ---------- Kassenbon scannen ---------- */
+let scanCtl = null;
+async function initSample() {
+  try { sample = window.claude && window.claude.use ? await window.claude.use("sample") : null; } catch { sample = null; }
+  if (!sample) return;
+  try { const lim = await sample.limits(); canScan = !!(lim && lim.images); } catch { canScan = false; }
+  render();
+}
+const SCAN_ERR = {
+  not_granted: "Claude darf in dieser Speis nicht mitlesen. Du kannst das in den Berechtigungen des Artifacts erlauben.",
+  sampling_disabled: "Claude ist für dein Konto hier nicht verfügbar.",
+  rate_limited: "Gerade zu viele Anfragen. Versuch es in ein paar Minuten nochmal.",
+  image_rejected: "Das Bild ließ sich nicht lesen. Nimm ein schärferes Foto (JPG oder PNG).",
+  invalid_json: "Der Bon war nicht eindeutig lesbar. Versuch ein Foto mit mehr Licht und ohne Knicke.",
+  refused: "Der Bon konnte nicht ausgewertet werden.",
+};
+async function runScan(file) {
+  openSheet(`<div class="form"><h2>Kassenbon wird gelesen</h2><div style="display:flex;gap:12px;align-items:center"><div class="spinner" aria-hidden="true"></div><p class="muted" id="scan-status" style="margin:0">Claude liest den Bon. Das dauert meist 20 bis 60 Sekunden.</p></div><div class="sheet-actions"><span class="grow"></span><button type="button" class="btn" data-act="close">Abbrechen</button></div></div>`);
+  scanCtl = new AbortController();
+  const plist = prods().sort(byName).slice(0, 300).map((p) => `${p.id} | ${p.name} | ${p.unit || "Stk"}${fmtSize(p) ? " à " + fmtSize(p) : ""}`).join("\n");
+  const prompt = `Das Bild zeigt einen Kassenbon eines österreichischen Supermarkts oder Drogeriemarkts. Lies jede gekaufte Position aus.
+Regeln:
+- Rabatte, Rabattpickerl (z. B. -25 %), Aktions- und Mengenabzüge, die zu einer Position gehören, mit dieser Position verrechnen. "total" ist der tatsächlich bezahlte Betrag dieser Position in Euro, "aktion" ist dann true.
+- Pfand und Tragetaschen als eigene Positionen aufnehmen.
+- "qty" ist die Stückzahl der Position (bei Gewichtsware 1).
+- "name" ist ein gut lesbarer Produktname ohne Kassen-Abkürzungen.
+- "match" ist die ID aus der Produktliste, wenn die Position eindeutig dieses Produkt ist, sonst null.
+- "store" ist einer dieser Märkte, wenn erkennbar, sonst null: ${S.settings.stores.join(", ")}.
+- "date" im Format JJJJ-MM-TT, wenn erkennbar, sonst null. "total" oben ist die Bon-Summe.
+Produktliste (ID | Name | Einheit):
+${plist || "(noch leer)"}
+Antworte nur mit JSON in genau dieser Form:
+{"store":"Hofer","date":"2026-10-14","total":12.47,"items":[{"name":"Spaghetti","qty":2,"total":1.98,"aktion":false,"match":null}]}`;
+  try {
+    const res = await sample.json(prompt, { images: [file], signal: scanCtl.signal });
+    scanCtl = null;
+    const items = Array.isArray(res && res.items) ? res.items : [];
+    if (!items.length) throw { code: "invalid_json" };
+    S.scan = {
+      store: S.settings.stores.includes(res.store) ? res.store : (res.store || S.settings.stores[0]),
+      date: /^\d{4}-\d{2}-\d{2}$/.test(res.date || "") ? res.date : today(),
+      sum: num(res.total),
+      items: items.map((i) => ({
+        name: String(i.name || "Position").slice(0, 80),
+        qty: num(i.qty) > 0 ? num(i.qty) : 1,
+        total: num(i.total) ?? 0,
+        aktion: !!i.aktion,
+        target: i.match && S.products.has(String(i.match)) ? String(i.match) : "__spend",
+      })),
+    };
+    sheetScanReview();
+  } catch (e) {
+    if (e && e.code === "cancelled") return;
+    scanCtl = null;
+    const el = $("#scan-status");
+    if (el) el.textContent = SCAN_ERR[e && e.code] || "Das hat nicht geklappt. Versuch es gleich nochmal.";
+    if (e && (e.code === "not_granted" || e.code === "sampling_disabled" || e.code === "images_unavailable")) { canScan = false; render(); }
+  }
+}
+function sheetScanReview() {
+  const sc = S.scan;
+  const popts = prods().sort(byName).map((p) => [p.id, p.name]);
+  const targetOpts = (v) => [["__spend", "Nur als Ausgabe"], ["__new", "Neues Produkt anlegen"], ["__skip", "Ignorieren"], ...popts]
+    .map(([k, l]) => `<option value="${esc(k)}"${k === v ? " selected" : ""}>${esc(l)}</option>`).join("");
+  const sum = sc.items.filter((i) => i.target !== "__skip").reduce((s, i) => s + (num(i.total) || 0), 0);
+  openSheet(`<div class="form">
+    <h2>Kassenbon prüfen</h2>
+    <div class="grid2">
+      <label class="f"><span>Markt</span><select id="sc-store" data-scan="store">${storeOpts(sc.store)}</select></label>
+      <label class="f"><span>Datum</span><input id="sc-date" type="date" data-scan="date" value="${esc(sc.date)}"></label>
+    </div>
+    <p class="hint">Ordne jede Position einem Produkt aus deinem Vorrat zu, dann steigt der Bestand und der Preis wird gemerkt. Alles andere zählt nur zu den Ausgaben.</p>
+    <div>${sc.items.map((i, n) => `<div class="scan-row">
+      <label class="f"><span>Position</span><input id="sc-n${n}" data-si="${n}" data-sf="name" value="${esc(i.name)}"></label>
+      <label class="f"><span>Menge</span><input id="sc-q${n}" data-si="${n}" data-sf="qty" inputmode="decimal" value="${esc(dec(i.qty))}"></label>
+      <label class="f"><span>€${i.aktion ? " · Aktion" : ""}</span><input id="sc-p${n}" data-si="${n}" data-sf="total" inputmode="decimal" value="${esc(dec(i.total))}"></label>
+      <label class="f full"><span>Zuordnung</span><select id="sc-t${n}" data-si="${n}" data-sf="target">${targetOpts(i.target)}</select></label>
+    </div>`).join("")}</div>
+    <p class="small" style="margin:0">Summe der Positionen: <b class="num" id="sc-sum">${eur(sum)}</b>${sc.sum ? ` · laut Bon <b class="num">${eur(sc.sum)}</b>` : ""}</p>
+    <div class="sheet-actions"><span class="grow"></span><button type="button" class="btn" data-act="close">Verwerfen</button><button type="button" class="btn primary" data-act="scan-apply">Übernehmen</button></div>
+  </div>`);
+}
+function applyScan() {
+  const sc = S.scan; if (!sc) return;
+  let n = 0;
+  for (const i of sc.items) {
+    const q = num(i.qty) > 0 ? num(i.qty) : 1, total = num(i.total) || 0;
+    if (i.target === "__skip") continue;
+    if (i.target === "__spend") { logSpend({ d: sc.date, pid: null, n: i.name, s: sc.store, q, p: r2(total), c: "Sonstiges", sv: 0 }); n++; continue; }
+    let id = i.target;
+    if (id === "__new") {
+      id = uid();
+      S.products.set(id, { ...newProduct(), name: i.name, cat: "Sonstiges", unit: "Stk", qty: 0, min: 0, max: 0, t: Date.now() });
+      persist("products/" + id);
+    }
+    if (S.products.has(id)) { applyPurchase({ id, q, s: sc.store, total, k: i.aktion, d: sc.date }); n++; }
+  }
+  S.scan = null; closeSheet();
+  toast(n + " Positionen übernommen.");
+}
+
+/* ---------- Toast ---------- */
+let toastT = 0;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 3600); }
+
+/* ---------- Ereignisse ---------- */
+function arm(btn, label) {
+  if (btn.dataset.armed) return true;
+  btn.dataset.armed = "1"; btn.classList.add("armed"); const old = btn.textContent; btn.textContent = label;
+  setTimeout(() => { if (btn.isConnected) { delete btn.dataset.armed; btn.classList.remove("armed"); btn.textContent = old; } }, 4000);
+  return false;
+}
+const ACT = {
+  tab: (t) => { S.tab = t.dataset.v; storeSet("speis-tab", S.tab); if (S.tab === "ausgaben" && t.id === "month-pill") S.month = monthKey(today()); draw(); window.scrollTo(0, 0); },
+  loc: (t) => { S.loc = t.dataset.v; draw(); },
+  new: () => sheetEdit(null),
+  edit: (t) => sheetEdit(t.dataset.id),
+  inc: (t) => step(t.dataset.id, 1),
+  dec: (t) => step(t.dataset.id, -1),
+  buy: (t) => sheetBuy(t.dataset.id),
+  prices: (t) => sheetPrices(t.dataset.id),
+  "price-new": () => sheetPriceNew(),
+  "spend-new": () => sheetSpend(),
+  "spend-del": (t) => { if (arm(t, "?")) delSpend(t.dataset.m, t.dataset.id); },
+  "obs-del": (t) => { const p = S.products.get(t.dataset.id); if (!p) return; const prices = (p.prices || []).filter((_, i) => i !== +t.dataset.i); putProduct(t.dataset.id, { ...p, prices }); sheetPrices(t.dataset.id); },
+  del: (t) => { if (arm(t, "Wirklich löschen?")) { delProduct(t.dataset.id); closeSheet(); toast("Produkt gelöscht."); } },
+  close: () => closeSheet(),
+  settings: () => sheetSettings(),
+  rules: () => sheetRules(),
+  month: (t) => { const n = addMonths(S.month, +t.dataset.v); if (n <= monthKey(today())) { S.month = n; draw(); } },
+  "extra-done": (t) => putSettings({ extras: S.settings.extras.filter((e) => e.id !== t.dataset.id) }),
+  "clear-ex": (t) => {
+    if (!arm(t, "Alle Beispiele löschen?")) return;
+    for (const [id, p] of S.products) if (p.ex) { S.products.delete(id); persist("products/" + id, 0); }
+    for (const [mk, m] of S.months) if ((m.items || []).some((i) => i.ex)) { S.months.set(mk, { ...m, items: m.items.filter((i) => !i.ex) }); persist("months/" + mk, 0); }
+    closeSheet(); render(); toast("Beispiele entfernt. Die Speis gehört jetzt dir.");
+  },
+  "copy-json": async () => {
+    const txt = JSON.stringify({ products: Object.fromEntries(S.products), months: Object.fromEntries(S.months), settings: S.settings }, null, 1);
+    const ta = $("#json-out");
+    try { await navigator.clipboard.writeText(txt); toast("Sicherung in die Zwischenablage kopiert."); }
+    catch { if (ta) { ta.hidden = false; ta.value = txt; ta.focus(); ta.select(); toast("Text markiert. Jetzt kopieren."); } }
+  },
+  scan: () => { const f = $("#scan-file"); f.value = ""; f.click(); },
+  "scan-apply": () => applyScan(),
+};
+function step(id, d) {
+  const p = S.products.get(id); if (!p) return;
+  const qty = Math.max(0, r2((+p.qty || 0) + d));
+  putProduct(id, { ...p, qty, t: Date.now() });
+}
+document.addEventListener("click", (e) => {
+  if (e.target === sheet) return closeSheet();
+  const t = e.target.closest("[data-act]");
+  if (!t || t.disabled) return;
+  const fn = ACT[t.dataset.act];
+  if (fn) { e.preventDefault(); fn(t, e); }
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !sheet.hidden) closeSheet(); });
+document.addEventListener("input", (e) => {
+  const t = e.target;
+  if (t.dataset.bind) { S[t.dataset.bind] = t.value; if (t.dataset.bind === "q") render(); return; }
+  if (t.id === "b-p") t.dataset.touched = "1";
+  if (t.id === "b-q") {
+    const f = t.form, pi = $("#b-p"), uc = num(f.dataset.uc), q = num(t.value);
+    if (uc && q && !pi.dataset.touched) pi.value = dec((uc * q).toFixed(2));
+  }
+  if (S.scan && t.dataset.si != null) {
+    S.scan.items[+t.dataset.si][t.dataset.sf] = t.value;
+    const sum = S.scan.items.filter((i) => i.target !== "__skip").reduce((s, i) => s + (num(i.total) || 0), 0);
+    const el = $("#sc-sum"); if (el) el.textContent = eur(sum);
+  }
+  if (S.scan && t.dataset.scan) S.scan[t.dataset.scan] = t.value;
+});
+$("#scan-file").addEventListener("change", (e) => { const f = e.target.files && e.target.files[0]; if (f && sample) runScan(f); });
+document.addEventListener("submit", (e) => {
+  const f = e.target; const kind = f.dataset.form; if (!kind) return;
+  e.preventDefault();
+  const fd = new FormData(f);
+  if (kind === "extra") {
+    const t = (S.extraDraft || "").trim(); if (!t) return;
+    S.extraDraft = ""; putSettings({ extras: [...S.settings.extras, { id: uid(), t: t.slice(0, 120) }] });
+  } else if (kind === "edit") {
+    const old = (f.dataset.id && S.products.get(f.dataset.id)) || newProduct();
+    const id = f.dataset.id || uid();
+    const name = String(fd.get("name") || "").trim(); if (!name) return;
+    const tgt = num(fd.get("target"));
+    putProduct(id, {
+      ...old, name, cat: fd.get("cat"), loc: fd.get("loc"),
+      unit: String(fd.get("unit") || "").trim() || "Stk", size: num(fd.get("size")) > 0 ? num(fd.get("size")) : 1, base: fd.get("base"),
+      qty: Math.max(0, num(fd.get("qty")) ?? 0), min: Math.max(0, num(fd.get("min")) ?? 0), max: Math.max(0, num(fd.get("max")) ?? 0),
+      target: tgt > 0 ? tgt : null, mhd: fd.get("mhd") || "", list: fd.get("list") === "on", note: String(fd.get("note") || "").trim(), t: Date.now(),
+    });
+    closeSheet(); toast(f.dataset.id ? "Gespeichert." : name + " angelegt.");
+  } else if (kind === "buy") {
+    const id = f.dataset.id, q = num(fd.get("q")), total = num(fd.get("p")) || 0;
+    if (!(q > 0)) return toast("Bitte eine Menge eingeben.");
+    applyPurchase({ id, q, s: fd.get("s"), total, k: fd.get("k") === "on", d: today() });
+    closeSheet(); toast("Verbucht.");
+  } else if (kind === "price") {
+    const id = f.dataset.id || fd.get("pid"); const p = S.products.get(id); if (!p) return;
+    const price = num(fd.get("p")); if (!(price > 0)) return toast("Bitte einen Preis eingeben.");
+    const a = num(fd.get("a")) > 0 ? num(fd.get("a")) : (+p.size > 0 ? +p.size : 1);
+    const o = { s: fd.get("s"), p: r2(price), a, d: fd.get("d") || today(), k: fd.get("k") === "on" };
+    putProduct(id, { ...p, prices: [o, ...(p.prices || [])].slice(0, 40), t: Date.now() });
+    toast(`${p.name}: ${eur(gp(o))} je ${p.base} gemerkt.`);
+    if (f.dataset.id) sheetPrices(id); else { f.reset(); const d = f.querySelector("[name=d]"); if (d) d.value = today(); }
+  } else if (kind === "spend") {
+    const p = num(fd.get("p")); if (!(p > 0)) return toast("Bitte einen Betrag eingeben.");
+    logSpend({ d: fd.get("d") || today(), pid: null, n: String(fd.get("n") || "").trim() || "Einkauf", s: fd.get("s"), q: 1, p: r2(p), c: fd.get("c"), sv: 0 });
+    closeSheet(); toast("Einkauf verbucht.");
+  } else if (kind === "settings") {
+    const lines = (v) => [...new Set(String(v || "").split("\n").map((x) => x.trim()).filter(Boolean))];
+    const b = num(fd.get("budget"));
+    putSettings({ budget: b > 0 ? b : null, stores: lines(fd.get("stores")), locs: lines(fd.get("locs")) });
+    closeSheet(); toast("Einstellungen gespeichert.");
+  }
+});
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if (TABS.includes(h)) { S.tab = h; draw(); } });
+
+/* ---------- Start ---------- */
+async function boot() {
+  draw();
+  let d = null;
+  try { d = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch { d = null; }
+  if (!d) { S.mode = "local"; setSync("local"); draw(); return; }
+  db = d;
+  const subErr = (e) => { if (e && e.code === "revoked") { setSync("err"); toast("Die Verbindung zur Speicherung wurde beendet. Lade die Seite neu."); } };
+  db.collection("products").onSnapshot((snap) => { S.products = applyCol(S.products, "products", snap); if (S.mode === "loading") { S.mode = "db"; setSync("ok"); } render(); }, subErr);
+  db.collection("months").onSnapshot((snap) => { S.months = applyCol(S.months, "months", snap); render(); }, subErr);
+  db.doc("settings/main").onSnapshot((snap) => { if (!isPending("settings/main")) S.settings = normSettings(snap.exists ? snap.data() : {}); render(); }, subErr);
+}
+boot();
+initSample();
+</script>

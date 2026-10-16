@@ -37,3 +37,10 @@ Quellen sind im Dokument einzeln ausgewiesen.
 
 Modellrechnungen ohne Berücksichtigung individueller Absetzbeträge, weiterer
 Einkünfte oder Sonderausgaben. Ersetzt keine Steuer- oder Rechtsberatung.
+
+---
+
+# Die Speis — Haushalt und Lebensmittel
+
+Vorrat, Einkaufsliste nach günstigstem Markt, Preisgedächtnis mit Grundpreisen und
+Monatsausgaben in einem Tool. Details in [`speis/README.md`](speis/README.md).
